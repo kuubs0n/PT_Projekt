@@ -38,10 +38,6 @@ public class getContentAsyncTask extends AsyncTask<Void, Void, Void> {
                 .data("", "odkurzacz")
                 .post();
 
-
-            Log.d("dziala?", "?");
-
-
         } catch (IOException e) {
             Log.e("doInBackground", e.getMessage());
         }
