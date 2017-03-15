@@ -9,6 +9,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.Connection;
 
 /**
@@ -20,9 +22,9 @@ public class getContentAsyncTask extends AsyncTask<Void, Void, Void> {
     private String url;
     private Document document;
 
+    public getContentAsyncTask(String baseUrl, String input) throws UnsupportedEncodingException {
 
-    public getContentAsyncTask(String url){
-        this.url = url;
+        this.url = baseUrl + URLEncoder.encode(input, "UTF-8");
         this.execute();
     }
 
@@ -34,11 +36,15 @@ public class getContentAsyncTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         try {
-            document = Jsoup.connect(url)
-                .data("", "odkurzacz")
-                .post();
+            document = Jsoup.connect(url).get();
+            Elements products = document.select("div.product-holder-grid");
 
-        } catch (IOException e) {
+            for(Element product : products){
+                Log.d("PRODUKT: ", product.select("a[title]").text().toString());
+            }
+
+        }
+        catch (IOException e) {
             Log.e("doInBackground", e.getMessage());
         }
         return null;

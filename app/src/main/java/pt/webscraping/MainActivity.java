@@ -23,7 +23,11 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+       try {
+           new getContentAsyncTask("http://www.emag.pl/search/", "krem do rąk");
 
-       new getContentAsyncTask("http://www.emag.pl/");
+       }catch(Exception e){
+           Log.e("@_@", e.getMessage());
+       }
     }
 }
