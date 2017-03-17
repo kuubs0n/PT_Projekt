@@ -19,6 +19,7 @@ public class MainActivity extends Activity {
    @BindView(R.id.title) TextView title;
 
    @Override public void onCreate(Bundle savedInstanceState) {
+       
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
