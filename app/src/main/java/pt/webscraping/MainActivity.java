@@ -24,7 +24,6 @@ import butterknife.OnClick;
 public class MainActivity extends Activity {
 
     @BindView(R.id.editTextQuery)EditText editTextQuery;
-
     @BindView(R.id.adView) AdView adView;
 
     @Override
