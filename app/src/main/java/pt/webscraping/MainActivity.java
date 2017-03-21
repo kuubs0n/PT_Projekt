@@ -37,7 +37,6 @@ public class MainActivity extends Activity {
         MobileAds.initialize(this, "ca-app-pub-7454303942261775~2781793443");
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
-
         new Database();
     }
 
