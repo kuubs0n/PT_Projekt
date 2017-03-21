@@ -50,8 +50,5 @@ public class MainActivity extends Activity {
         if(!query.isEmpty()){
 
         }
-
     }
-
-
 }
