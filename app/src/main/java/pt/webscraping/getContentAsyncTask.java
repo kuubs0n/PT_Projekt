@@ -37,7 +37,7 @@ public class getContentAsyncTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         try {
             document = Jsoup.connect(url).get();
-            Elements products = document.select("div.product-holder-grid");
+            Elements products = document.select("div.Product-holder-grid");
 
             for(Element product : products){
                 Log.d("PRODUKT: ", product.select("a[title]").text().toString());

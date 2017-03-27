@@ -2,20 +2,12 @@ package pt.webscraping;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +29,8 @@ public class MainActivity extends Activity {
         MobileAds.initialize(this, "ca-app-pub-7454303942261775~2781793443");
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
-        new Database();
+
+        new database();
     }
 
     @OnClick(R.id.buttonSearch)
