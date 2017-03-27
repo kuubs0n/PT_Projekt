@@ -38,7 +38,7 @@ public class database {
                 List<Template> templateList = new ArrayList<>();
 
                 for (DataSnapshot t: dataSnapshot.getChildren()) {
-                    templateList.add(new Template(t));
+                    new Template(t);
                 }
             }
 
