@@ -7,19 +7,36 @@
     android:padding="20dp"
     >
 
-        <EditText
-            android:id="@+id/editTextQuery"
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/szymonoff"
+            android:id="@+id/imageButton"/>
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_centerVertical="true"
-        />
+            android:id="@+id/textInputLayout">
+
+                <EditText
+                    android:id="@+id/editTextQuery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                />
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/buttonSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_below="@id/editTextQuery"
+            android:layout_below="@id/textInputLayout"
             android:text="Search" />
 
         <com.google.android.gms.ads.AdView

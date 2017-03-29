@@ -17,12 +17,12 @@ import java.sql.Connection;
  * Created by szymon on 13.03.2017.
  */
 
-public class getContentAsyncTask extends AsyncTask<Void, Void, Void> {
+public class GetContentAsyncTask extends AsyncTask<Void, Void, Void> {
 
     private String url;
     private Document document;
 
-    public getContentAsyncTask(String baseUrl, String input) throws UnsupportedEncodingException {
+    public GetContentAsyncTask(String baseUrl, String input) throws UnsupportedEncodingException {
 
         this.url = baseUrl + URLEncoder.encode(input, "UTF-8");
         this.execute();

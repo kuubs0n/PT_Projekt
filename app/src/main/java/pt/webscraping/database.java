@@ -17,17 +17,19 @@ import pt.webscraping.entities.Template;
  * Created by szymon on 20.03.2017.
  */
 
-public class database {
+public class Database {
 
     private FirebaseDatabase database;
 
-    public database(){
+    public Database(){
 
         database = FirebaseDatabase.getInstance();
         this.getTemplates();
     }
 
-    public void getTemplates(){
+    public void getTemplates() {
+
+        List<Template> templateList = new ArrayList<>();
 
         DatabaseReference templatesRef = database.getReference("templates");
 
@@ -35,11 +37,10 @@ public class database {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                List<Template> templateList = new ArrayList<>();
-
-                for (DataSnapshot t: dataSnapshot.getChildren()) {
-                    new Template(t);
+                for (DataSnapshot t : dataSnapshot.getChildren()) {
+                    templateList.add(new Template(t));
                 }
+
             }
 
             @Override
@@ -48,6 +49,4 @@ public class database {
             }
         });
     }
-
-
 }
