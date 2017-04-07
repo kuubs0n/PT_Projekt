@@ -12,7 +12,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/szymonoff"
             android:id="@+id/imageButton"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:onClick="easterEgg" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -36,7 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_below="@id/textInputLayout"
-            android:text="Search" />
+            android:text="Search"
+            android:onClick="searchItems" />
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
