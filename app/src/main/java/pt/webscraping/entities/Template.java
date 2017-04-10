@@ -2,11 +2,13 @@ package pt.webscraping.entities;
 
 import com.google.firebase.database.DataSnapshot;
 
+import java.io.Serializable;
+
 /**
  * Created by szymon on 21.03.2017.
  */
 
-public class Template {
+public class Template implements Serializable{
     public String name;
     public URL url;
     public Product product;

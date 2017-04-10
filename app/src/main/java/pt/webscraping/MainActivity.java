@@ -1,6 +1,7 @@
 package pt.webscraping;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,16 +14,20 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import pt.webscraping.entities.Template;
 
 public class MainActivity extends Activity {
 
     @BindView(R.id.editTextQuery)EditText editTextQuery;
     @BindView(R.id.adView) AdView adView;
     @BindView(R.id.imageButton) ImageButton imageButton;
+
+    ArrayList<Template> templates;
 
     private Integer clickCounter = 0;
 
@@ -40,7 +45,9 @@ public class MainActivity extends Activity {
                 .build();
         adView.loadAd(adRequest);
 
-        new Database();
+        //odebranie szablonow
+        Intent i = getIntent();
+        templates = (ArrayList<Template>) i.getSerializableExtra("templates");
     }
 
     @OnClick(R.id.buttonSearch)
@@ -49,19 +56,7 @@ public class MainActivity extends Activity {
         String query = editTextQuery.getText().toString();
 
         if(!query.isEmpty()) {
-            Log.d("MainActivity", "Search box value: + " + query);
-
-            try {
-                String url = "http://www.matras.pl/szukaj/?query=";
-
-                GetContentAsyncTask task = new GetContentAsyncTask(url, query);
-                task.execute();
-
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                Log.e("MainActivity", "Unhandled Exception in GetContentAsyncTask :<");
-            }
-
+           //sprobuj jeszcze raz
         }
     }
 
