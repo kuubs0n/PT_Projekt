@@ -46,6 +46,8 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     testCompile 'junit:junit:4.12'
+
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.6'
 }
 
 
