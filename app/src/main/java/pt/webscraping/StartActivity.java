@@ -1,5 +1,8 @@
 package pt.webscraping;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -9,28 +12,37 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import pt.webscraping.entities.Template;
 
 /**
- * Created by szymon on 20.03.2017.
+ * Created by szymon on 10.04.2017.
  */
 
-public class Database {
+public class StartActivity extends Activity {
 
-    private FirebaseDatabase database;
+    public void onCreate(Bundle savedInstanceState) {
 
-    public Database(){
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start);
 
-        database = FirebaseDatabase.getInstance();
-        this.getTemplates();
+        getTemplates();
+    }
+
+    public void switchActivity(ArrayList<Template> templateList){
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("templates", templateList);
+
+        startActivity(intent);
+        this.finish();
     }
 
     public void getTemplates() {
 
-        List<Template> templateList = new ArrayList<>();
+        ArrayList<Template> templateList = new ArrayList<>();
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference templatesRef = database.getReference("templates");
 
         templatesRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -40,7 +52,7 @@ public class Database {
                 for (DataSnapshot t : dataSnapshot.getChildren()) {
                     templateList.add(new Template(t));
                 }
-
+                switchActivity(templateList);
             }
 
             @Override
