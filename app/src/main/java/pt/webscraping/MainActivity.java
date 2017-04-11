@@ -2,10 +2,15 @@ package pt.webscraping;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -22,6 +27,7 @@ import java.util.Collection;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import pt.webscraping.entities.Product;
 import pt.webscraping.entities.Template;
 
 public class MainActivity extends Activity {
@@ -29,6 +35,8 @@ public class MainActivity extends Activity {
     @BindView(R.id.editTextQuery)EditText editTextQuery;
     @BindView(R.id.adView) AdView adView;
     @BindView(R.id.imageButton) ImageButton imageButton;
+    @BindView(R.id.textViewAdvFilters) TextView textViewAdvFilters;
+    @BindView(R.id.advFilters) LinearLayout advFilters;
 
     ArrayList<Template> templates;
 
@@ -51,6 +59,27 @@ public class MainActivity extends Activity {
         //odebranie szablonow
         Intent i = getIntent();
         templates = (ArrayList<Template>) i.getSerializableExtra("templates");
+
+        prepareFilters();
+    }
+
+    private void prepareFilters(){
+        for(Template t : templates){
+            CheckBox checkBox = new CheckBox(this);
+            checkBox.setText(t.name);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            advFilters.addView(checkBox, lp);
+
+        }
+    }
+
+    @OnClick(R.id.textViewAdvFilters)
+    public void toggleFilters(View view){
+        if(advFilters.getVisibility() == View.VISIBLE){
+            advFilters.setVisibility(View.INVISIBLE);
+        }else{
+            advFilters.setVisibility(View.VISIBLE);
+        }
     }
 
     @OnClick(R.id.buttonSearch)
@@ -60,10 +89,13 @@ public class MainActivity extends Activity {
 
         if(!query.isEmpty()) {
             new GetDocumentAsyncTask(templates.get(0), query, (Document doc) -> {
-                //doc = document pobrany na podstawie 1 szablonu.
-
 
             });
+            ArrayList<Product> list = new ArrayList<>();
+            Intent intent = new Intent(MainActivity.this, ResultsActivity.class);
+            intent.putExtra("listOfProducts", list);
+            startActivity(intent);
+
             //reklamy
         }
     }
