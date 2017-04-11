@@ -12,4 +12,9 @@ public class URL implements Serializable{
     public String path;
     public String query;
     public String page;
+
+
+    public String getUrl(){
+        return protocol + domainName + path + query + page;
+    }
 }
