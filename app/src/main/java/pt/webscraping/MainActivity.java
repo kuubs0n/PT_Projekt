@@ -3,7 +3,6 @@ package pt.webscraping;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -13,8 +12,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
-import java.io.UnsupportedEncodingException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,12 +54,17 @@ public class MainActivity extends Activity {
     }
 
     @OnClick(R.id.buttonSearch)
-    public void searchItems(View view) {
+    public void searchClick(View view) {
 
         String query = editTextQuery.getText().toString();
 
         if(!query.isEmpty()) {
-           //sprobuj jeszcze raz
+            new GetDocumentAsyncTask(templates.get(0), query, (Document doc) -> {
+                //doc = document pobrany na podstawie 1 szablonu.
+
+
+            });
+            //reklamy
         }
     }
 
