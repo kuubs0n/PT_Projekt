@@ -17,4 +17,8 @@ public class URL implements Serializable{
     public String getUrl(){
         return protocol + domainName + path + query + page;
     }
+
+    public String getBaseUrl() {
+        return protocol + domainName;
+    }
 }
