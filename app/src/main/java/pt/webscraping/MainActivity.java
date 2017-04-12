@@ -23,11 +23,13 @@ import org.jsoup.nodes.Document;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pt.webscraping.entities.Product;
+import pt.webscraping.entities.ProductView;
 import pt.webscraping.entities.Template;
 
 public class MainActivity extends Activity {
@@ -85,15 +87,18 @@ public class MainActivity extends Activity {
     @OnClick(R.id.buttonSearch)
     public void searchClick(View view) {
 
+        ArrayList<ProductView> results = new ArrayList<>();
         String query = editTextQuery.getText().toString();
 
         if(!query.isEmpty()) {
-            new GetDocumentAsyncTask(templates.get(0), query, (Document doc) -> {
+            for(Template t : templates){
+                new GetDocumentAsyncTask(t, query, (Document doc) -> {
+                    results.addAll(ParseHTML.parseProducts(doc, t));
+                });
+            }
 
-            });
-            ArrayList<Product> list = new ArrayList<>();
             Intent intent = new Intent(MainActivity.this, ResultsActivity.class);
-            intent.putExtra("listOfProducts", list);
+            intent.putExtra("listOfProducts", results);
             startActivity(intent);
 
             //reklamy

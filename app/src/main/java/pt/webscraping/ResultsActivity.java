@@ -18,7 +18,8 @@ import pt.webscraping.entities.Product;
 public class ResultsActivity extends Activity {
 
     private ArrayList<Product> _listOfProducts;
-    private RecyclerView _recyclerView;
+
+    @BindView(R.id.recyclerView) RecyclerView _recyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,17 +35,15 @@ public class ResultsActivity extends Activity {
     }
 
     private void initializeRecyclerView(){
-        _recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         _recyclerView.setHasFixedSize(true);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         _recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     private void initializeData() {
-        _listOfProducts = new ArrayList<>();
+        /*_listOfProducts = new ArrayList<>();
         _listOfProducts.add(new Product("selector", "Kaczynski", "Autor: Tusk", "link", "19,99 PLN", ""));
-        _listOfProducts.add(new Product("selector2", "Kaczynski", "Autor: Tusk", "link2", "29,99 PLN", ""));
+        _listOfProducts.add(new Product("selector2", "Kaczynski", "Autor: Tusk", "link2", "29,99 PLN", ""));*/
     }
 
     private void initializeAdapter() {
