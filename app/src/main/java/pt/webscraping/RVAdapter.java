@@ -14,6 +14,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pt.webscraping.entities.Product;
+import pt.webscraping.entities.ProductView;
 
 /**
  * Created by Kuba on 11-Apr-2017.
@@ -40,9 +41,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.BookViewHolder> {
         }
     }
 
-    List<Product> products;
+    List<ProductView> products;
 
-    RVAdapter(List<Product> products){
+    RVAdapter(List<ProductView> products){
         this.products = products;
     }
 

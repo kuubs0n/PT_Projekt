@@ -1,6 +1,7 @@
 package pt.webscraping;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class MainActivity extends Activity {
     @BindView(R.id.advFilters) LinearLayout advFilters;
 
     ArrayList<Template> templates;
+    ProgressDialog progressDialog;
 
     private Integer clickCounter = 0;
 
@@ -93,14 +95,14 @@ public class MainActivity extends Activity {
         if(!query.isEmpty()) {
             for(Template t : templates){
                 new GetDocumentAsyncTask(t, query, (Document doc) -> {
+                    prepareProgressDialog();
                     results.addAll(ParseHTML.parseProducts(doc, t));
+                    Intent intent = new Intent(MainActivity.this, ResultsActivity.class);
+                    intent.putExtra("listOfProducts", results);
+                    startActivity(intent);
+                    progressDialog.dismiss();
                 });
             }
-
-            Intent intent = new Intent(MainActivity.this, ResultsActivity.class);
-            intent.putExtra("listOfProducts", results);
-            startActivity(intent);
-
             //reklamy
         }
     }
@@ -112,5 +114,13 @@ public class MainActivity extends Activity {
             imageButton.setImageResource(R.drawable.szymonon);
             Toast.makeText(getApplicationContext(), "Nawiedził Cię Szymon Developer! Wpłać 2 złote i korzystaj dowoli! :)", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void prepareProgressDialog(){
+        progressDialog = new ProgressDialog(MainActivity.this,
+                R.style.ProgressBar);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Preparing results");
+        progressDialog.show();
     }
 }

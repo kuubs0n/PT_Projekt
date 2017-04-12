@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pt.webscraping.entities.Product;
+import pt.webscraping.entities.ProductView;
 
 /**
  * Created by Kuba on 11-Apr-2017.
@@ -17,7 +18,7 @@ import pt.webscraping.entities.Product;
 
 public class ResultsActivity extends Activity {
 
-    private ArrayList<Product> _listOfProducts;
+    private ArrayList<ProductView> _listOfProducts;
 
     @BindView(R.id.recyclerView) RecyclerView _recyclerView;
 
@@ -27,7 +28,7 @@ public class ResultsActivity extends Activity {
         setContentView(R.layout.activity_results);
         ButterKnife.bind(this);
 
-        _listOfProducts = (ArrayList<Product>) getIntent().getSerializableExtra("listOfProducts");
+        _listOfProducts = (ArrayList<ProductView>) getIntent().getSerializableExtra("listOfProducts");
 
         initializeRecyclerView();
         initializeData();
