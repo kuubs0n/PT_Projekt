@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">web.scraping</string>
     <string name="query_activity_ad_id">ca-app-pub-7454303942261775/5735259845</string>
+
+    <string name="notification_download_title">web.scraper</string>
+    <string name="notification_download_results_text">Downloading results - %1$d from %2$d...</string>
+    <string name="notification_download_results_info">Pobrano wyniki wyszukiwania!</string>
 </resources>
