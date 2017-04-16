@@ -2,9 +2,11 @@ package pt.webscraping;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.res.ColorStateList;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -18,19 +20,11 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import pt.webscraping.entities.Product;
-import pt.webscraping.entities.ProductView;
 import pt.webscraping.entities.Template;
 
 public class MainActivity extends Activity {
@@ -46,29 +40,68 @@ public class MainActivity extends Activity {
 
     private Integer clickCounter = 0;
 
+    private IntentFilter filter = new IntentFilter("pt.webscraping.RESULTS_READY");
+    private BroadcastReceiver broadcast = new GetContentStateReceiver();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("web.scraper", "MainActivity - onCreate.");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        //reklama
+        // reklama
         MobileAds.initialize(this, "ca-app-pub-7454303942261775~2781793443");
         AdRequest adRequest = new AdRequest.Builder()
+
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .addTestDevice("93A32EEEBE42D84FCA84328BB291232B") // Mati OnePlusOne
                 .build();
         adView.loadAd(adRequest);
 
-        //odebranie szablonow
+        // odebranie szablonow
         Intent i = getIntent();
         templates = (ArrayList<Template>) i.getSerializableExtra("templates");
 
+        //
         prepareFilters();
     }
 
-    private void prepareFilters(){
-        for(Template t : templates){
+    @Override
+    protected void onStart()
+    {
+        Log.d("web.scraper", "MainActivity - onStart.");
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        Log.d("web.scraper", "MainActivity - onStop.");
+        super.onStop();
+    }
+
+    @Override
+    public void onResume()
+    {
+        Log.d("web.scraper", "MainActivity - onResume.");
+        super.onResume();
+        registerReceiver(broadcast, filter);
+    }
+
+    @Override
+    public void onPause()
+    {
+        Log.d("web.scraper", "MainActivity - onPause.");
+        unregisterReceiver(broadcast);
+        super.onPause();
+    }
+
+    private void prepareFilters()
+    {
+        for(Template t : templates)
+        {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(t.name);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -87,23 +120,26 @@ public class MainActivity extends Activity {
     }
 
     @OnClick(R.id.buttonSearch)
-    public void searchClick(View view) {
+    public void searchClick(View view)
+    {
+        String query = editTextQuery.getText().toString().trim();
 
-        ArrayList<ProductView> results = new ArrayList<>();
-        String query = editTextQuery.getText().toString();
+        if(!query.isEmpty())
+        {
+            // service
+            Intent mServiceIntent = new Intent(this, GetContentIntentService.class);
+            mServiceIntent.putExtra("templates", templates);
+            mServiceIntent.putExtra("searchQuery", query);
+            this.startService(mServiceIntent);
 
-        if(!query.isEmpty()) {
-            for(Template t : templates){
-                new GetDocumentAsyncTask(t, query, (Document doc) -> {
-                    prepareProgressDialog();
-                    results.addAll(ParseHTML.parseProducts(doc, t));
-                    Intent intent = new Intent(MainActivity.this, ResultsActivity.class);
-                    intent.putExtra("listOfProducts", results);
-                    startActivity(intent);
-                    progressDialog.dismiss();
-                });
-            }
-            //reklamy
+            Intent intent = new Intent(this, LoadingActivity.class);
+            startActivity(intent);
+
+            // reklamy
+        }
+        else
+        {
+            editTextQuery.setError("Enter a valid book name!");
         }
     }
 
@@ -115,6 +151,7 @@ public class MainActivity extends Activity {
             Toast.makeText(getApplicationContext(), "Nawiedził Cię Szymon Developer! Wpłać 2 złote i korzystaj dowoli! :)", Toast.LENGTH_LONG).show();
         }
     }
+
 
     private void prepareProgressDialog(){
         progressDialog = new ProgressDialog(MainActivity.this,
