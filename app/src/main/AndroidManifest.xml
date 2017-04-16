@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pt.webscraping">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Downloading data from internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Permission to check the network state -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,16 +16,29 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".StartActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".ResultsActivity"></activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".ResultsActivity" />
+
+        <service
+            android:name=".GetContentIntentService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".GetContentStateReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="pt.webscraping.RESULTS_READY" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".LoadingActivity"></activity>
     </application>
 
 </manifest>
