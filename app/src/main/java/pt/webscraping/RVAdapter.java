@@ -1,6 +1,5 @@
 package pt.webscraping;
 
-import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,9 +10,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import pt.webscraping.entities.Product;
 import pt.webscraping.entities.ProductView;
 
 /**

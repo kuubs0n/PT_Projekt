@@ -1,6 +1,8 @@
 package pt.webscraping;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +11,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pt.webscraping.entities.Product;
 import pt.webscraping.entities.ProductView;
 
 /**
@@ -29,6 +30,10 @@ public class ResultsActivity extends Activity {
         ButterKnife.bind(this);
 
         _listOfProducts = (ArrayList<ProductView>) getIntent().getSerializableExtra("listOfProducts");
+
+        // dismiss notification when user enter results
+        NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nManager.cancel(3453);
 
         initializeRecyclerView();
         initializeData();
