@@ -33,6 +33,7 @@ public class GetContentIntentService extends IntentService
     // random id used to determine our notification
     private static int NOTIFICATION_ID = 3453;
 
+    // ArrayList with result received from our bookshops
     private ArrayList<ProductView> _results = new ArrayList<>();
 
     public GetContentIntentService()
@@ -47,6 +48,8 @@ public class GetContentIntentService extends IntentService
 
         // receive templates to use with
         _templates = (ArrayList<Template>) intent.getSerializableExtra("templates");
+
+        // receive search query typed by user
         _searchQuery = (String) intent.getStringExtra("searchQuery");
 
         // create and display notification for future use
@@ -64,23 +67,20 @@ public class GetContentIntentService extends IntentService
         {
             new GetDocumentAsyncTask(template, _searchQuery, (Document doc) -> {
                 _results.addAll(ParseHTML.parseProducts(doc, template));
-
-
             });
+
             try {
-                Thread.sleep(3000);
+                Thread.sleep(4000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
+            // we need to display notification with progress
             updateNotification();
             _dStep++;
         }
 
     }
-
-
-
 
     @Override
     public void onDestroy()
@@ -93,14 +93,13 @@ public class GetContentIntentService extends IntentService
         _nBuilder
                 .setContentIntent(contentIntent)
                 .setContentText(getString(R.string.notification_download_results_info))
-                //.setNumber(_dStep)
                 .setProgress(0, 0, false);
         _nManager.notify(NOTIFICATION_ID, _nBuilder.build());
 
-        // broadcast receiver
-        Intent broadcastState = new Intent();
-        broadcastState.setAction("pt.webscraping.RESULTS_READY");
-        broadcastState.putExtra("results", _results);
+        // broadcast receiver to update our activity that we have all results
+        Intent broadcastState = new Intent()
+            .setAction("pt.webscraping.RESULTS_READY")
+            .putExtra("listOfProducts", _results);
         sendBroadcast(broadcastState);
 
         Log.d("web.scraper", "GetContentIntentService - done.");
@@ -121,10 +120,7 @@ public class GetContentIntentService extends IntentService
                 .setContentText(notificationText)
                 .setProgress(100, 0, false);
 
-        // TODO: Przekierowanie na okno ładowania wyników z reklamą i statusem czy coś...
-        //Intent targetIntent = new Intent(this, ResultsActivity.class);
-        Intent targetIntent = new Intent();
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, targetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
         _nBuilder.setContentIntent(contentIntent);
 
         _nManager.notify(NOTIFICATION_ID, _nBuilder.build());
@@ -138,11 +134,8 @@ public class GetContentIntentService extends IntentService
         String notificationText = getResources().getString(R.string.notification_download_results_text, _dStep, _templates.size());
         _nBuilder
                 .setContentText(notificationText)
-                //.setNumber(_dStep)
                 .setProgress(100, progress, false);
 
-        // Because the ID remains unchanged, the existing notification is
-        // updated.
         _nManager.notify(NOTIFICATION_ID, _nBuilder.build());
     }
 }
