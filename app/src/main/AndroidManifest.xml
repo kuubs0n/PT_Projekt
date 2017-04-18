@@ -15,30 +15,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".ResultsActivity" />
 
-        <service
-            android:name=".GetContentIntentService"
-            android:exported="false" />
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".ResultsActivity" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".LoadingActivity" android:parentActivityName=".MainActivity" android:noHistory="true"></activity>
 
-        <receiver
-            android:name=".GetContentStateReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="pt.webscraping.RESULTS_READY" />
-            </intent-filter>
-        </receiver>
+        <service android:name=".GetContentIntentService" android:exported="false" />
 
-        <activity android:name=".LoadingActivity"></activity>
     </application>
-
 </manifest>
