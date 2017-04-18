@@ -8,7 +8,9 @@
 
     <string name="form_book_name_entered_invalid">Enter a valid book name!</string>
 
+    <string name="results_loading">Loading&#8230;</string>
+
     <string name="notification_download_title">web.scraper</string>
-    <string name="notification_download_results_text">Downloading results - %1$d from %2$d...</string>
+    <string name="notification_download_results_text">Downloading results - %1$d from %2$d&#8230;</string>
     <string name="notification_download_results_info">Pobrano wyniki wyszukiwania!</string>
 </resources>
