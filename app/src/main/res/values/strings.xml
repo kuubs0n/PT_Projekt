@@ -3,14 +3,16 @@
 
     <!-- AdMob Stuff -->
     <string name="admob_app_id">ca-app-pub-7454303942261775~2781793443</string>
-    <string name="admob_baner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="admob_interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="admob_baner_ad_unit_id">ca-app-pub-7454303942261775/5735259845</string>
+    <string name="admob_interstitial_ad_unit_id">ca-app-pub-7454303942261775/5991207847</string>
 
     <string name="form_book_name_entered_invalid">Enter a valid book name!</string>
 
     <string name="results_loading">Loading&#8230;</string>
+    <string name="results_no_internet_connection">No internet connection</string>
+    <string name="refresh">Refresh</string>
 
     <string name="notification_download_title">web.scraper</string>
     <string name="notification_download_results_text">Downloading results - %1$d from %2$d&#8230;</string>
-    <string name="notification_download_results_info">Pobrano wyniki wyszukiwania!</string>
+    <string name="notification_download_results_info">Results downloaded!</string>
 </resources>
