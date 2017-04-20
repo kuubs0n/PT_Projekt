@@ -18,6 +18,7 @@
     <string name="results_no_internet_connection">No internet connection</string>
     <string name="refresh">Refresh</string>
 
+    <string name="shared_preferenced_key">last.queries</string>
     <string name="notification_download_title">web.scraper</string>
     <string name="notification_download_results_text">Downloading results - %1$d from %2$d&#8230;</string>
     <string name="notification_download_results_info">Results downloaded!</string>
