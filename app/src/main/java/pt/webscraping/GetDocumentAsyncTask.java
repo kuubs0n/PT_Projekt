@@ -7,7 +7,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.net.URL;
 import java.net.URLEncoder;
 
 import pt.webscraping.entities.Template;
@@ -39,7 +38,6 @@ public class GetDocumentAsyncTask extends AsyncTask<Void, Void, Document> {
             template.url.query += URLEncoder.encode(query, "UTF-8");
             template.url.page += template.pagination.startsWith;
 
-            String foo = template.url.getUrl();
             doc = Jsoup.connect(template.url.getUrl()).get();
 
         } catch (IOException e) {
