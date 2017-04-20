@@ -56,18 +56,15 @@ public class MainActivity extends Activity {
         ButterKnife.bind(this);
 
         // reklama
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("93A32EEEBE42D84FCA84328BB291232B") // Mati OnePlusOne
-                .build();
-        adView.loadAd(adRequest);
+        AdProvider ad = AdProvider.getInstance(this);
+        ad.initialize();
+        adView.loadAd(ad.createRequest());
 
         // odebranie szablonow
         Intent i = getIntent();
         templates = (ArrayList<Template>) i.getSerializableExtra("templates");
 
-        //
+        // filtry księgarni
         prepareFilters();
     }
 
@@ -78,7 +75,6 @@ public class MainActivity extends Activity {
             checkBox.setText(t.name);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             advFilters.addView(checkBox, lp);
-
         }
     }
 
@@ -86,7 +82,7 @@ public class MainActivity extends Activity {
     public void toggleFilters(View view) {
         if(advFilters.getVisibility() == View.VISIBLE){
             advFilters.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             advFilters.setVisibility(View.VISIBLE);
         }
     }

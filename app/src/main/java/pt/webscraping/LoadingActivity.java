@@ -18,14 +18,15 @@ import java.util.ArrayList;
 
 import pt.webscraping.entities.ProductView;
 
-public class LoadingActivity extends Activity {
-
-    //reklama pełnoekranowa
-    private InterstitialAd _mInterstitialAd;
+public class LoadingActivity extends Activity
+{
 
     private ArrayList<ProductView> _results;
 
     private IntentFilter filter = new IntentFilter("pt.webscraping.RESULTS_READY");
+
+    private AdProvider _ad;
+
     private BroadcastReceiver broadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -44,45 +45,30 @@ public class LoadingActivity extends Activity {
         setContentView(R.layout.activity_loading);
 
         // fullscreen ad
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
-        _mInterstitialAd = new InterstitialAd(this);
-        _mInterstitialAd.setAdUnitId(getString(R.string.admob_interstitial_ad_unit_id));
-
-        _mInterstitialAd.setAdListener(new AdListener() {
+        AdListener listener = new AdListener() {
             @Override
             public void onAdClosed() {
-                showLoadingScreen();
+                redirectActivity();
             }
-        });
+        };
 
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("93A32EEEBE42D84FCA84328BB291232B") // mati one plus one
-                .build();
+        _ad = AdProvider.getInstance(this);
+        _ad.initialize();
+        _ad.createInterstitialAd(listener);
 
-        _mInterstitialAd.loadAd(adRequest);
-        /*
-        if (!_mInterstitialAd.isLoading() && !_mInterstitialAd.isLoaded()) {
-
-            _mInterstitialAd.loadAd(adRequest);
+        if (_ad.isReady())
+        {
+            _ad.loadAd();
         }
-        */
     }
 
     @Override
     protected void onStart()
     {
         super.onStart();
-        /*
-        if (_mInterstitialAd != null && _mInterstitialAd.isLoaded())
-        {
-            _mInterstitialAd.show();
-        }
-        else
-        {
-            Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show();
-        }
-        */
+
+
+
     }
     @Override
     public void onResume() {
@@ -106,8 +92,18 @@ public class LoadingActivity extends Activity {
     {
         Log.d("web.scraper", "LoadingActivity - onResultsReady.");
 
-        _mInterstitialAd = null;
+        if (_ad.isLoaded())
+        {
+            _ad.showInterstitialAd();
+        }
+        else
+        {
+            Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    public void redirectActivity()
+    {
         Intent intent = new Intent(this, ResultsActivity.class);
         intent.putExtra("listOfProducts", _results);
         startActivity(intent);
