@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
@@ -55,11 +56,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // reklama
-        AdProvider ad = AdProvider.getInstance(this);
-        ad.initialize();
-        adView.loadAd(ad.createRequest());
-
         // odebranie szablonow
         Intent i = getIntent();
         templates = (ArrayList<Template>) i.getSerializableExtra("templates");
@@ -68,6 +64,17 @@ public class MainActivity extends Activity {
         prepareFilters();
     }
 
+    public void onResume()
+    {
+        super.onResume();
+
+        editTextQuery.setText("");
+        // reklama
+        AdProvider ad = AdProvider.getInstance(this);
+        ad.initialize();
+        ad.createRequest();
+        adView.loadAd(ad.getRequest());
+    }
     private void prepareFilters() {
         for(Template t : templates)
         {
@@ -94,6 +101,7 @@ public class MainActivity extends Activity {
 
         if(!query.isEmpty())
         {
+            QueryHistory.add(this, query);
             // service
             Intent mServiceIntent = new Intent(this, GetContentIntentService.class)
                 .putExtra("templates", templates)

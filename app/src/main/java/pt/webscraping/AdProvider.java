@@ -21,6 +21,8 @@ public class AdProvider
 
     private AdRequest _adRequest;
 
+    private AdRequest.Builder _adBuilder;
+
     private InterstitialAd _mInterstitialAd;
 
     private AdProvider() { }
@@ -40,13 +42,18 @@ public class AdProvider
         MobileAds.initialize(_context, _context.getString(R.string.admob_app_id));
     }
 
-    public AdRequest createRequest()
+    public void createRequest()
     {
-        _adRequest =  new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("93A32EEEBE42D84FCA84328BB291232B") // Mati OnePlusOne
-                .build();
-        return _adRequest;
+        _adBuilder =  new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+                //.addTestDevice("93A32EEEBE42D84FCA84328BB291232B"); // Mati OnePlusOne
+
+        for (String keyword : QueryHistory.get(_context))
+        {
+            _adBuilder.addKeyword(keyword);
+        }
+
+        _adRequest = _adBuilder.build();
     }
 
     public AdRequest getRequest()

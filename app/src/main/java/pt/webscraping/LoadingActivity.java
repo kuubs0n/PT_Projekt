@@ -35,6 +35,7 @@ public class LoadingActivity extends Activity
             _results = (ArrayList<ProductView>) intent.getSerializableExtra("listOfProducts");
 
             onResultsReady();
+            // redirectActivity();
         }
     };
 
@@ -46,6 +47,10 @@ public class LoadingActivity extends Activity
 
         // fullscreen ad
         AdListener listener = new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                //onResultsReady();
+            }
             @Override
             public void onAdClosed() {
                 redirectActivity();
