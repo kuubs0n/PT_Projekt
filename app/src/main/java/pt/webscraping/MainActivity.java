@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -40,6 +41,9 @@ public class MainActivity extends Activity {
 
     @BindView(R.id.advFilters)
     LinearLayout advFilters;
+
+    @BindView(R.id.buttonSearch)
+    Button buttonSearch;
 
     // list of bookshops templates
     ArrayList<Template> templates;
@@ -93,14 +97,17 @@ public class MainActivity extends Activity {
     public void toggleFilters(View view) {
         if(advFilters.getVisibility() == View.VISIBLE){
             advFilters.setVisibility(View.INVISIBLE);
+            textViewAdvFilters.setText(R.string.advanced_filters_hidden);
         } else {
             advFilters.setVisibility(View.VISIBLE);
+            textViewAdvFilters.setText(R.string.advanced_filters_shown);
         }
     }
 
     @OnClick(R.id.buttonSearch)
     public void searchClick(View view)
     {
+        clearFiltersSetError();
         String query = editTextQuery.getText().toString().trim();
 
         if(!query.isEmpty())
@@ -110,7 +117,7 @@ public class MainActivity extends Activity {
             ArrayList<Template> selectedTemplates = getSelectedTemplates();
 
             if(selectedTemplates.isEmpty()){
-                Toast.makeText(getApplicationContext(), "Select at least one site", Toast.LENGTH_LONG).show();
+                advancedFiltersSetError("Set at least one source");
                 return;
             }
 
@@ -129,21 +136,28 @@ public class MainActivity extends Activity {
         }
     }
 
-    private ArrayList<Template> getSelectedTemplates(){
+    private void advancedFiltersSetError(String message){
+        buttonSearch.setError(message);
+    }
 
-        ArrayList<CheckBox> checkBoxes =  checkboxes.stream().filter(checkbox -> checkbox.isChecked()).collect(Collectors.toCollection(ArrayList::new));
+    private void clearFiltersSetError(){
+        buttonSearch.setError(null);
+    }
+
+    private ArrayList<Template> getSelectedTemplates(){
 
         ArrayList<Template> selectedTemplates = new ArrayList<>();
 
-        for(CheckBox checkbox : checkBoxes){
-           selectedTemplates.add(getTemplateByName(checkbox.getText().toString()));
+        for(CheckBox checkBox : checkboxes){
+            if(checkBox.isChecked()) {
+                for (Template template : templates) {
+                    if (template.name.equals(checkBox.getText().toString())) {
+                        selectedTemplates.add(template);
+                    }
+                }
+            }
         }
-
         return selectedTemplates;
-    }
-
-    private Template getTemplateByName(String name){
-        return templates.stream().filter(template -> template.name.equals(name)).findFirst().get();
     }
 
     @OnClick(R.id.imageButton)
