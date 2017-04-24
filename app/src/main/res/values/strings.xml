@@ -24,4 +24,6 @@
     <string name="notification_download_title">web.scraper</string>
     <string name="notification_download_results_text">Downloading results - %1$d from %2$d&#8230;</string>
     <string name="notification_download_results_info">Results downloaded!</string>
+    <string name="advanced_filters_hidden">Advanced filters ▼</string>
+    <string name="advanced_filters_shown">Advanced filters ▲</string>
 </resources>

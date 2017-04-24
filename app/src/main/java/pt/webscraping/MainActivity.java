@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -40,6 +41,9 @@ public class MainActivity extends Activity {
 
     @BindView(R.id.advFilters)
     LinearLayout advFilters;
+
+    @BindView(R.id.buttonSearch)
+    Button buttonSearch;
 
     // list of bookshops templates
     ArrayList<Template> templates;
@@ -81,6 +85,7 @@ public class MainActivity extends Activity {
         for(Template t : templates)
         {
             CheckBox checkBox = new CheckBox(this);
+            checkBox.setChecked(true);
             checkBox.setText(t.name);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             advFilters.addView(checkBox, lp);
@@ -92,21 +97,30 @@ public class MainActivity extends Activity {
     public void toggleFilters(View view) {
         if(advFilters.getVisibility() == View.VISIBLE){
             advFilters.setVisibility(View.INVISIBLE);
+            textViewAdvFilters.setText(R.string.advanced_filters_hidden);
         } else {
             advFilters.setVisibility(View.VISIBLE);
+            textViewAdvFilters.setText(R.string.advanced_filters_shown);
         }
     }
 
     @OnClick(R.id.buttonSearch)
     public void searchClick(View view)
     {
+        clearFiltersSetError();
         String query = editTextQuery.getText().toString().trim();
 
         if(!query.isEmpty())
         {
             QueryHistory.add(this, query);
             // service
-            ArrayList<Template> temp = getSelectedTemplates();
+            ArrayList<Template> selectedTemplates = getSelectedTemplates();
+
+            if(selectedTemplates.isEmpty()){
+                advancedFiltersSetError("Set at least one source");
+                return;
+            }
+
             Intent mServiceIntent = new Intent(this, GetContentIntentService.class)
                 .putExtra("templates", getSelectedTemplates())
                 .putExtra("searchQuery", query);
@@ -122,21 +136,28 @@ public class MainActivity extends Activity {
         }
     }
 
-    private ArrayList<Template> getSelectedTemplates(){
+    private void advancedFiltersSetError(String message){
+        buttonSearch.setError(message);
+    }
 
-        ArrayList<CheckBox> checkBoxes =  checkboxes.stream().filter(checkbox -> checkbox.isChecked()).collect(Collectors.toCollection(ArrayList::new));
+    private void clearFiltersSetError(){
+        buttonSearch.setError(null);
+    }
+
+    private ArrayList<Template> getSelectedTemplates(){
 
         ArrayList<Template> selectedTemplates = new ArrayList<>();
 
-        for(CheckBox checkbox : checkBoxes){
-           selectedTemplates.add(getTemplateByName(checkbox.getText().toString()));
+        for(CheckBox checkBox : checkboxes){
+            if(checkBox.isChecked()) {
+                for (Template template : templates) {
+                    if (template.name.equals(checkBox.getText().toString())) {
+                        selectedTemplates.add(template);
+                    }
+                }
+            }
         }
-
         return selectedTemplates;
-    }
-
-    private Template getTemplateByName(String name){
-        return templates.stream().filter(template -> template.name.equals(name)).findFirst().get();
     }
 
     @OnClick(R.id.imageButton)
