@@ -77,7 +77,6 @@ public class MainActivity extends Activity {
         super.onResume();
 
         editTextQuery.setText("");
-        buttonSearch.setClickable(true);
 
         // reklama
         AdProvider ad = AdProvider.getInstance(this);
@@ -143,8 +142,6 @@ public class MainActivity extends Activity {
     {
         clearFiltersSetError();
         String query = editTextQuery.getText().toString().trim();
-
-        buttonSearch.setClickable(false);
 
         if(!query.isEmpty())
         {

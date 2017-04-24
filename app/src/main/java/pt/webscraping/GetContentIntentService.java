@@ -70,7 +70,7 @@ public class GetContentIntentService extends IntentService
             });
 
             try {
-                Thread.sleep(4000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -129,12 +129,12 @@ public class GetContentIntentService extends IntentService
     // update current notification
     private void updateNotification()
     {
-        int progress = _dStep / _templates.size() * 100;
+        float progress = _dStep * 100 / _templates.size();
 
         String notificationText = getResources().getString(R.string.notification_download_results_text, _dStep, _templates.size());
         _nBuilder
                 .setContentText(notificationText)
-                .setProgress(100, progress, false);
+                .setProgress(100, Math.round(progress), false);
 
         _nManager.notify(NOTIFICATION_ID, _nBuilder.build());
     }
