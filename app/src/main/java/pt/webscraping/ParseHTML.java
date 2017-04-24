@@ -4,7 +4,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import pt.webscraping.entities.ProductView;
 import pt.webscraping.entities.Template;
