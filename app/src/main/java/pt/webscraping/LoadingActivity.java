@@ -27,18 +27,16 @@ public class LoadingActivity extends Activity
     private BroadcastReceiver broadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, "Pobrano wyniki wyszukiwania...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.notification_download_results_info, Toast.LENGTH_SHORT).show();
 
             _results = (ArrayList<ProductView>) intent.getSerializableExtra("listOfProducts");
 
             onResultsReady();
-            // redirectActivity();
         }
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
@@ -58,8 +56,7 @@ public class LoadingActivity extends Activity
         _ad.initialize();
         _ad.createInterstitialAd(listener);
 
-        if (_ad.isReady())
-        {
+        if (_ad.isReady()) {
             _ad.loadAd();
         }
     }
@@ -82,25 +79,18 @@ public class LoadingActivity extends Activity
         super.onPause();
     }
 
-    public void onResultsReady()
-    {
+    public void onResultsReady() {
         Log.d("web.scraper", "LoadingActivity - onResultsReady.");
 
-        if (_ad.isLoaded())
-        {
+        if (_ad.isLoaded()) {
             // TODO: only for debug purposes, removed to disable fullscreen ad
             //_ad.showInterstitialAd();
             // TODO: only for debug purposes, redirect
             redirectActivity();
         }
-        else
-        {
-            Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show();
-        }
     }
 
-    public void redirectActivity()
-    {
+    public void redirectActivity() {
         Intent intent = new Intent(this, ResultsActivity.class);
         intent.putExtra("listOfProducts", _results);
         startActivity(intent);
