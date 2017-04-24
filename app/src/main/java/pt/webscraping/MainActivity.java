@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +43,8 @@ public class MainActivity extends Activity {
 
     // list of bookshops templates
     ArrayList<Template> templates;
+    //list of checkboxes
+    ArrayList<CheckBox> checkboxes;
 
 
     private Integer clickCounter = 0;
@@ -61,8 +65,7 @@ public class MainActivity extends Activity {
         prepareFilters();
     }
 
-    public void onResume()
-    {
+    public void onResume()  {
         super.onResume();
 
         editTextQuery.setText("");
@@ -72,13 +75,16 @@ public class MainActivity extends Activity {
         ad.createRequest();
         adView.loadAd(ad.getRequest());
     }
+
     private void prepareFilters() {
+        checkboxes = new ArrayList<>();
         for(Template t : templates)
         {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(t.name);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             advFilters.addView(checkBox, lp);
+            checkboxes.add(checkBox);
         }
     }
 
@@ -100,8 +106,9 @@ public class MainActivity extends Activity {
         {
             QueryHistory.add(this, query);
             // service
+            ArrayList<Template> temp = getSelectedTemplates();
             Intent mServiceIntent = new Intent(this, GetContentIntentService.class)
-                .putExtra("templates", templates)
+                .putExtra("templates", getSelectedTemplates())
                 .putExtra("searchQuery", query);
             this.startService(mServiceIntent);
 
@@ -113,6 +120,23 @@ public class MainActivity extends Activity {
         {
             editTextQuery.setError(getString(R.string.form_book_name_entered_invalid));
         }
+    }
+
+    private ArrayList<Template> getSelectedTemplates(){
+
+        ArrayList<CheckBox> checkBoxes =  checkboxes.stream().filter(checkbox -> checkbox.isChecked()).collect(Collectors.toCollection(ArrayList::new));
+
+        ArrayList<Template> selectedTemplates = new ArrayList<>();
+
+        for(CheckBox checkbox : checkBoxes){
+           selectedTemplates.add(getTemplateByName(checkbox.getText().toString()));
+        }
+
+        return selectedTemplates;
+    }
+
+    private Template getTemplateByName(String name){
+        return templates.stream().filter(template -> template.name.equals(name)).findFirst().get();
     }
 
     @OnClick(R.id.imageButton)
