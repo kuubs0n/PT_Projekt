@@ -57,17 +57,18 @@
             android:layout_below="@+id/buttonSearch"
             android:layout_marginTop="15dp"/>
 
-        <LinearLayout
+        <ScrollView
             android:id="@+id/advFilters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="invisible"
             android:gravity="center_horizontal"
+            android:orientation="vertical"
             android:layout_marginTop="10dp"
             android:layout_below="@+id/textViewAdvFilters"
                 >
 
-        </LinearLayout>
+        </ScrollView>
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"

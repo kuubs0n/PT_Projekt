@@ -1,8 +1,12 @@
 package pt.webscraping;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +15,13 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -38,7 +44,7 @@ public class MainActivity extends Activity {
     TextView textViewAdvFilters;
 
     @BindView(R.id.advFilters)
-    LinearLayout advFilters;
+    ScrollView advFilters;
 
     @BindView(R.id.buttonSearch)
     Button buttonSearch;
@@ -81,27 +87,55 @@ public class MainActivity extends Activity {
     }
 
     private void prepareFilters() {
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setLayoutParams( new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT));
+
         checkboxes = new ArrayList<>();
         for(Template t : templates)
         {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setChecked(true);
             checkBox.setText(t.name);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            advFilters.addView(checkBox, lp);
+            linearLayout.addView(checkBox);
             checkboxes.add(checkBox);
         }
+        advFilters.addView(linearLayout);
     }
 
     @OnClick(R.id.textViewAdvFilters)
     public void toggleFilters(View view) {
-        if(advFilters.getVisibility() == View.VISIBLE){
+        /*if(advFilters.getVisibility() == View.VISIBLE){
             advFilters.setVisibility(View.INVISIBLE);
             textViewAdvFilters.setText(R.string.advanced_filters_hidden);
         } else {
             advFilters.setVisibility(View.VISIBLE);
             textViewAdvFilters.setText(R.string.advanced_filters_shown);
-        }
+        }*/
+        CheckBox ch = new CheckBox(this);
+        ch.setText("a jaaaa");
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setLayoutParams( new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT));
+        linearLayout.addView(ch);
+        linearLayout.addView(ch);
+        linearLayout.addView(ch);
+        linearLayout.addView(ch);
+        linearLayout.addView(ch);
+        linearLayout.addView(ch);
+        linearLayout.addView(ch);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(linearLayout);
+        alertDialogBuilder.setTitle("Select");
+        alertDialogBuilder.setMessage("Message");
+        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        alertDialogBuilder.show();
     }
 
     @OnClick(R.id.buttonSearch)
@@ -119,7 +153,7 @@ public class MainActivity extends Activity {
             ArrayList<Template> selectedTemplates = getSelectedTemplates();
 
             if(selectedTemplates.isEmpty()){
-                advancedFiltersSetError("Set at least one source");
+                advancedFiltersSetError(getString(R.string.filters_no_selected_error));
                 return;
             }
 

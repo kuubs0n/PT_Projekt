@@ -26,4 +26,7 @@
     <string name="notification_download_results_info">Results downloaded!</string>
     <string name="advanced_filters_hidden">Advanced filters ▼</string>
     <string name="advanced_filters_shown">Advanced filters ▲</string>
+    <string name="filters_no_selected_error">Select source</string>
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
 </resources>
