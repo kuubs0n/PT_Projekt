@@ -17,8 +17,6 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,6 +71,8 @@ public class MainActivity extends Activity {
         super.onResume();
 
         editTextQuery.setText("");
+        buttonSearch.setClickable(true);
+
         // reklama
         AdProvider ad = AdProvider.getInstance(this);
         ad.initialize();
@@ -109,6 +109,8 @@ public class MainActivity extends Activity {
     {
         clearFiltersSetError();
         String query = editTextQuery.getText().toString().trim();
+
+        buttonSearch.setClickable(false);
 
         if(!query.isEmpty())
         {

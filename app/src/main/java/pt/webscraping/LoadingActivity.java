@@ -65,14 +65,6 @@ public class LoadingActivity extends Activity
     }
 
     @Override
-    protected void onStart()
-    {
-        super.onStart();
-
-
-
-    }
-    @Override
     public void onResume() {
         Log.d("web.scraper", "LoadingActivity - onResume.");
 
@@ -96,7 +88,10 @@ public class LoadingActivity extends Activity
 
         if (_ad.isLoaded())
         {
-            _ad.showInterstitialAd();
+            // TODO: only for debug purposes, removed to disable fullscreen ad
+            //_ad.showInterstitialAd();
+            // TODO: only for debug purposes, redirect
+            redirectActivity();
         }
         else
         {
@@ -109,10 +104,5 @@ public class LoadingActivity extends Activity
         Intent intent = new Intent(this, ResultsActivity.class);
         intent.putExtra("listOfProducts", _results);
         startActivity(intent);
-    }
-
-    private void showLoadingScreen()
-    {
-        Toast.makeText(this, "Ad closed, display loading icon...", Toast.LENGTH_SHORT).show();
     }
 }
