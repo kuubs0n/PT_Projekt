@@ -18,7 +18,7 @@ public class Template implements Serializable{
 
         this.name = dataSnapshot.child("name").getValue(String.class);
         this.url = dataSnapshot.child("URL").getValue(URL.class);
-        this.product = new Product(dataSnapshot.child("product"));
+        this.product = dataSnapshot.child("product").getValue(Product.class);
         this.pagination = dataSnapshot.child("pagination").getValue(Pagination.class);
     }
 }
