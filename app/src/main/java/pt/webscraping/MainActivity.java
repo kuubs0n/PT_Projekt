@@ -81,6 +81,7 @@ public class MainActivity extends Activity {
         for(Template t : templates)
         {
             CheckBox checkBox = new CheckBox(this);
+            checkBox.setChecked(true);
             checkBox.setText(t.name);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             advFilters.addView(checkBox, lp);
@@ -106,7 +107,13 @@ public class MainActivity extends Activity {
         {
             QueryHistory.add(this, query);
             // service
-            ArrayList<Template> temp = getSelectedTemplates();
+            ArrayList<Template> selectedTemplates = getSelectedTemplates();
+
+            if(selectedTemplates.isEmpty()){
+                Toast.makeText(getApplicationContext(), "Select at least one site", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             Intent mServiceIntent = new Intent(this, GetContentIntentService.class)
                 .putExtra("templates", getSelectedTemplates())
                 .putExtra("searchQuery", query);
