@@ -14,4 +14,10 @@
         <item name="android:windowBackground">@color/colorDark</item>
     </style>
 
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
+
 </resources>

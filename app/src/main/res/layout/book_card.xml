@@ -45,26 +45,32 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewTitle"
+                    android:text="RandomText"
                     android:layout_alignParentTop="true"
-                    android:textSize="30sp"
+                    android:textSize="22sp"
+                    android:textColor="@color/colorPrimary"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewAuthor"
+                    android:text="Random Value"
+                    android:textColor="@color/colorDark"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textViewPrice"/>
+                    android:id="@+id/textViewPrice"
+                    android:text="Random price"
+                    android:textColor="@color/colorRed"/>
 
             </LinearLayout>
 
         </LinearLayout>
 
-
+        <View android:layout_marginBottom="2dp" style="@style/Divider"/>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
