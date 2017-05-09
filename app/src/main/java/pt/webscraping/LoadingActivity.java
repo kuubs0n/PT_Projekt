@@ -22,6 +22,8 @@ public class LoadingActivity extends Activity
 
     private IntentFilter filter = new IntentFilter("pt.webscraping.RESULTS_READY");
 
+    private String _searchQuery;
+
     private AdProvider _ad;
 
     private BroadcastReceiver broadcast = new BroadcastReceiver() {
@@ -30,6 +32,7 @@ public class LoadingActivity extends Activity
             Toast.makeText(context, R.string.notification_download_results_info, Toast.LENGTH_SHORT).show();
 
             _results = (ArrayList<ProductView>) intent.getSerializableExtra("listOfProducts");
+            _searchQuery = (String) intent.getSerializableExtra("searchQuery");
 
             onResultsReady();
         }
@@ -93,6 +96,7 @@ public class LoadingActivity extends Activity
     public void redirectActivity() {
         Intent intent = new Intent(this, ResultsActivity.class);
         intent.putExtra("listOfProducts", _results);
+        intent.putExtra("searchQuery", _searchQuery);
         startActivity(intent);
     }
 }

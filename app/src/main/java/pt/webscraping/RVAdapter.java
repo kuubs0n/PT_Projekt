@@ -18,6 +18,7 @@ import pt.webscraping.entities.ProductView;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.BookViewHolder> {
 
+    CustomItemClickListener listener;
 
     public static class BookViewHolder extends RecyclerView.ViewHolder{
 
@@ -39,8 +40,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.BookViewHolder> {
 
     List<ProductView> products;
 
-    RVAdapter(List<ProductView> products){
+    RVAdapter(List<ProductView> products, CustomItemClickListener listener){
         this.products = products;
+        this.listener = listener;
     }
 
     @Override
@@ -52,6 +54,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.BookViewHolder> {
     public BookViewHolder onCreateViewHolder(ViewGroup viewGroup, int i){
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.book_card, viewGroup, false);
         BookViewHolder bvh = new BookViewHolder(v);
+        v.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                listener.onItemClick(v, bvh.getPosition());
+            }
+        });
         return bvh;
     }
 

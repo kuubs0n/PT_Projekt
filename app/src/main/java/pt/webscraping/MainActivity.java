@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -23,6 +24,7 @@ import com.google.android.gms.ads.AdView;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +56,7 @@ public class MainActivity extends Activity {
     //list of checkboxes
     ArrayList<CheckBox> checkboxes;
 
+    LinearLayout linearLayoutCheckboxes;
 
     private Integer clickCounter = 0;
 
@@ -86,55 +89,33 @@ public class MainActivity extends Activity {
     }
 
     private void prepareFilters() {
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setLayoutParams( new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT));
-
+        linearLayoutCheckboxes = new LinearLayout(this);
+        linearLayoutCheckboxes.setLayoutParams( new ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT,
+                ScrollView.LayoutParams.MATCH_PARENT));
+        linearLayoutCheckboxes.setOrientation(LinearLayout.VERTICAL);
         checkboxes = new ArrayList<>();
         for(Template t : templates)
         {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setChecked(true);
             checkBox.setText(t.name);
-            linearLayout.addView(checkBox);
+            linearLayoutCheckboxes.addView(checkBox);
             checkboxes.add(checkBox);
         }
-        advFilters.addView(linearLayout);
+        advFilters.addView(linearLayoutCheckboxes);
     }
 
     @OnClick(R.id.textViewAdvFilters)
     public void toggleFilters(View view) {
-        /*if(advFilters.getVisibility() == View.VISIBLE){
+
+        if(advFilters.getVisibility() == View.VISIBLE){
             advFilters.setVisibility(View.INVISIBLE);
             textViewAdvFilters.setText(R.string.advanced_filters_hidden);
         } else {
             advFilters.setVisibility(View.VISIBLE);
             textViewAdvFilters.setText(R.string.advanced_filters_shown);
-        }*/
-        CheckBox ch = new CheckBox(this);
-        ch.setText("a jaaaa");
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setLayoutParams( new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT));
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
+        }
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setView(linearLayout);
-        alertDialogBuilder.setTitle("Select");
-        alertDialogBuilder.setMessage("Message");
-        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        alertDialogBuilder.show();
     }
 
     @OnClick(R.id.buttonSearch)

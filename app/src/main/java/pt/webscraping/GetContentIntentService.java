@@ -88,6 +88,7 @@ public class GetContentIntentService extends IntentService
         // notification stuff
         Intent targetIntent = new Intent(this, ResultsActivity.class);
         targetIntent.putExtra("listOfProducts", _results);
+        targetIntent.putExtra("searchQuery", _searchQuery);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, targetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         _nBuilder
@@ -99,7 +100,8 @@ public class GetContentIntentService extends IntentService
         // broadcast receiver to update our activity that we have all results
         Intent broadcastState = new Intent()
             .setAction("pt.webscraping.RESULTS_READY")
-            .putExtra("listOfProducts", _results);
+            .putExtra("listOfProducts", _results)
+            .putExtra("searchQuery", _searchQuery);
         sendBroadcast(broadcastState);
 
         Log.d("web.scraper", "GetContentIntentService - done.");
