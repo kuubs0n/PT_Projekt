@@ -116,15 +116,18 @@ public class GetContentIntentService extends IntentService
         _nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         String notificationText = getResources().getString(R.string.notification_download_results_text, 1, _templates.size());
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent cancelIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Action cancelAction = new NotificationCompat.Action.Builder(R.drawable.ic_stat_stop, "Cancel", cancelIntent).build();
 
         _nBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.szymonon)
                 .setContentTitle(getString(R.string.notification_download_title))
                 .setContentText(notificationText)
-                .setProgress(100, 0, false);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
-        _nBuilder.setContentIntent(contentIntent);
+                .addAction(cancelAction)
+                .setProgress(100, 0, false)
+                .setContentIntent(contentIntent);
 
         _nManager.notify(NOTIFICATION_ID, _nBuilder.build());
     }
@@ -140,5 +143,10 @@ public class GetContentIntentService extends IntentService
                 .setProgress(100, Math.round(progress), false);
 
         _nManager.notify(NOTIFICATION_ID, _nBuilder.build());
+    }
+
+    public void cancelAction()
+    {
+        Toast.makeText(this, "Cancel :<", Toast.LENGTH_SHORT).show();
     }
 }
