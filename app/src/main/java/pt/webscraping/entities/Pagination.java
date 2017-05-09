@@ -9,4 +9,5 @@ import java.io.Serializable;
 public class Pagination implements Serializable{
     public Integer startsWith;
     public String nextLink;
+    public Integer step;
 }
