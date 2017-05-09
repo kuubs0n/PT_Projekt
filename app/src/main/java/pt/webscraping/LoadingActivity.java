@@ -44,7 +44,8 @@ public class LoadingActivity extends Activity
         AdListener listener = new AdListener() {
             @Override
             public void onAdLoaded() {
-                //onResultsReady();
+                // TODO: debug purposes
+                onResultsReady();
             }
             @Override
             public void onAdClosed() {
