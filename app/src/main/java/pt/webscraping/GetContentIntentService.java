@@ -17,6 +17,8 @@ import pt.webscraping.entities.Template;
 
 public class GetContentIntentService extends IntentService
 {
+    public static boolean isDone = false;
+
     // ArrayList of templates received from MainActivity
     private ArrayList<Template> _templates;
 
@@ -68,6 +70,7 @@ public class GetContentIntentService extends IntentService
             new GetDocumentAsyncTask(template, _searchQuery, (Document doc) -> {
                 _results.addAll(ParseHTML.parseProducts(doc, template));
             });
+            while(this.isDone != false) {}
 
             try {
                 Thread.sleep(1000);

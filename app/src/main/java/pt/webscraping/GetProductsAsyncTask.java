@@ -30,17 +30,7 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, Document> {
     private void setInitValues(String query) {
         for(Template template : templates) {
             template.url.query += query;
-            template.url.page = template.pagination.startsWith.toString();
-        }
-    }
-
-    private void setNextPage() {
-        Integer currentPage, nextPage;
-        for(Template template : templates) {
-            currentPage = Integer.parseInt(template.url.page);
-            nextPage = currentPage + template.pagination.step;
-
-            template.url.page = nextPage.toString();
+            template.url.page += template.pagination.startsWith.toString();
         }
     }
 
@@ -54,17 +44,16 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, Document> {
 
         try {
             for(Template template : templates) {
-                String url;
+                String url = template.url.getUrl();
                 while(isNextPage == true) {
 
-                    url = template.url.getUrl();
                     doc = Jsoup.connect(url).get();
                     products.addAll(ParseHTML.parseProducts(doc, template));
 
                     isNextPage = ! doc.select(template.pagination.nextLink).isEmpty()
                                 || doc.select(template.pagination.nextLink).attr("abs:href") != url;
                     if(isNextPage) {
-                        setNextPage();
+                        url = doc.select(template.pagination.nextLink).attr("abs:href");
                     }
                 }
             }
