@@ -104,13 +104,14 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.textViewAdvFilters)
     public void toggleFilters(View view) {
-        /*if(advFilters.getVisibility() == View.VISIBLE){
+        if(advFilters.getVisibility() == View.VISIBLE){
             advFilters.setVisibility(View.INVISIBLE);
             textViewAdvFilters.setText(R.string.advanced_filters_hidden);
         } else {
             advFilters.setVisibility(View.VISIBLE);
             textViewAdvFilters.setText(R.string.advanced_filters_shown);
-        }*/
+        }
+        /*
         CheckBox ch = new CheckBox(this);
         ch.setText("a jaaaa");
         LinearLayout linearLayout = new LinearLayout(this);
@@ -135,6 +136,7 @@ public class MainActivity extends Activity {
             }
         });
         alertDialogBuilder.show();
+        */
     }
 
     @OnClick(R.id.buttonSearch)
