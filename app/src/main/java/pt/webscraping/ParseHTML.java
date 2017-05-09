@@ -19,13 +19,12 @@ public class ParseHTML {
 
         ArrayList<Element> productsEl  = doc.select(template.product.element);
 
-
         for(Element p : productsEl){
 
             products.add(new ProductView(
                     p.select(template.product.title).text(),
                     p.select(template.product.author).text(),
-                    template.url.getBaseUrl() + p.select(template.product.link).attr("href"),
+                    p.select(template.product.link).attr("abs:href"),
                     p.select(template.product.price).text(),
                     p.select(template.product.photoURL).attr("src")
             ));

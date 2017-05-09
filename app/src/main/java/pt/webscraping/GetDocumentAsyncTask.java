@@ -40,7 +40,7 @@ public class GetDocumentAsyncTask extends AsyncTask<Void, Void, Document> {
 
             doc = Jsoup.connect(template.url.getUrl()).get();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e("getDocuments:Jsoup.get", e.getMessage());
         }
         return doc;
