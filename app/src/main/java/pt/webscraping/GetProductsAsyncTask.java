@@ -5,6 +5,8 @@ import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -50,10 +52,11 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, Document> {
                     doc = Jsoup.connect(url).get();
                     products.addAll(ParseHTML.parseProducts(doc, template));
 
-                    isNextPage = ! doc.select(template.pagination.nextLink).isEmpty()
-                                || doc.select(template.pagination.nextLink).attr("abs:href") != url;
+                    Elements nextPageEl = doc.select(template.pagination.nextLink);
+                    isNextPage = ! nextPageEl.isEmpty()
+                                || nextPageEl.first().attr("abs:href") != url;
                     if(isNextPage) {
-                        url = doc.select(template.pagination.nextLink).attr("abs:href");
+                        url = nextPageEl.first().attr("abs:href");
                     }
                 }
             }
