@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,9 @@ public class ResultsActivity extends Activity {
 
     @BindView(R.id.recyclerView) RecyclerView _recyclerView;
 
+    @BindView(R.id.textViewEmpty)
+    TextView textViewEmpty;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,21 +40,19 @@ public class ResultsActivity extends Activity {
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nManager.cancel(3453);
 
-        initializeRecyclerView();
-        initializeData();
-        initializeAdapter();
+        if(_listOfProducts.isEmpty()){
+            textViewEmpty.setVisibility(View.VISIBLE);
+        }else {
+            textViewEmpty.setVisibility(View.INVISIBLE);
+            initializeRecyclerView();
+            initializeAdapter();
+        }
     }
 
     private void initializeRecyclerView(){
         _recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         _recyclerView.setLayoutManager(linearLayoutManager);
-    }
-
-    private void initializeData() {
-        /*_listOfProducts = new ArrayList<>();
-        _listOfProducts.add(new Product("selector", "Kaczynski", "Autor: Tusk", "link", "19,99 PLN", ""));
-        _listOfProducts.add(new Product("selector2", "Kaczynski", "Autor: Tusk", "link2", "29,99 PLN", ""));*/
     }
 
     private void initializeAdapter() {

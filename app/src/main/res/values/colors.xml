@@ -7,4 +7,5 @@
     <color name="album_title">#4c4c4c</color>
     <color name="colorDark">#505050</color>
     <color name="colorWhite">#fff</color>
+    <color name="colorRed">#ff0000</color>
 </resources>
