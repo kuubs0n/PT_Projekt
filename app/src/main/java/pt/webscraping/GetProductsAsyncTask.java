@@ -19,25 +19,23 @@ import pt.webscraping.entities.Template;
  * Created by szymon on 09.05.2017.
  */
 
-public class GetProductsAsyncTask extends AsyncTask<Void, Void, Document> {
+public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<ProductView>> {
 
-    private List<Template> templates;
+    private Template template;
 
-    public GetProductsAsyncTask(List<Template> templates, String query) {
-        this.templates = templates;
+    public GetProductsAsyncTask(Template template, String query) {
+        this.template = template;
         setInitValues(query);
         this.execute();
     }
 
     private void setInitValues(String query) {
-        for(Template template : templates) {
-            template.url.query += query;
-            template.url.page += template.pagination.startsWith.toString();
-        }
+        template.url.query += query;
+        template.url.page += template.pagination.startsWith.toString();
     }
 
     @Override
-    protected Document doInBackground(Void... params) {
+    protected ArrayList<ProductView> doInBackground(Void... params) {
 
         Document doc = null;
         ArrayList<ProductView> products = new ArrayList<>();
@@ -45,31 +43,34 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, Document> {
         boolean isNextPage = true;
 
         try {
-            for(Template template : templates) {
-                String url = template.url.getUrl();
-                while(isNextPage == true) {
+            String url = template.url.getUrl();
 
-                    doc = Jsoup.connect(url).get();
-                    products.addAll(ParseHTML.parseProducts(doc, template));
+            while(isNextPage == true) {
 
-                    Elements nextPageEl = doc.select(template.pagination.nextLink);
-                    isNextPage = ! nextPageEl.isEmpty()
-                                || nextPageEl.first().attr("abs:href") != url;
-                    if(isNextPage) {
-                        url = nextPageEl.first().attr("abs:href");
-                    }
+                doc = Jsoup.connect(url).get();
+                products.addAll(ParseHTML.parseProducts(doc, template));
+
+                Elements nextPageEl = doc.select(template.pagination.nextLink);
+
+                if(nextPageEl.isEmpty()){
+                    break;
                 }
+                if(nextPageEl.first().attr("abs:href").equals(doc.location())){
+                    break;
+                }
+                url = nextPageEl.first().attr("abs:href");
             }
 
         } catch (Exception e) {
             Log.e("getDocuments:Jsoup.get", e.getMessage());
         }
-        return doc;
+        return products;
     }
 
     @Override
-    protected void onPostExecute(Document doc) {
-        GetContentIntentService.isDone = true;
+    protected void onPostExecute(ArrayList<ProductView> products) {
+        GetContentIntentService.downloaded += 1;
+        GetContentIntentService._results.addAll(products);
     }
 }
 

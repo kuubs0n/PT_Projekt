@@ -17,8 +17,7 @@ import pt.webscraping.entities.Template;
 
 public class GetContentIntentService extends IntentService
 {
-    public static boolean isDone = false;
-
+    public static int downloaded = 0;
     // ArrayList of templates received from MainActivity
     private ArrayList<Template> _templates;
 
@@ -36,7 +35,8 @@ public class GetContentIntentService extends IntentService
     private static int NOTIFICATION_ID = 3453;
 
     // ArrayList with result received from our bookshops
-    private ArrayList<ProductView> _results = new ArrayList<>();
+    //private ArrayList<ProductView> _results = new ArrayList<>();
+    public static ArrayList<ProductView> _results = new ArrayList<>();
 
     public GetContentIntentService()
     {
@@ -67,21 +67,12 @@ public class GetContentIntentService extends IntentService
 
         for(Template template : _templates)
         {
-            new GetDocumentAsyncTask(template, _searchQuery, (Document doc) -> {
-                _results.addAll(ParseHTML.parseProducts(doc, template));
-            });
-            while(this.isDone != false) {}
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+            new GetProductsAsyncTask(template, _searchQuery);
             // we need to display notification with progress
-            updateNotification();
-            _dStep++;
+            //updateNotification();
+            //_dStep++;
         }
+        while(_templates.size()-1 != this.downloaded) {}
 
     }
 
