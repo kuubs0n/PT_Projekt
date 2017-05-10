@@ -3,6 +3,8 @@ package pt.webscraping;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,10 +25,12 @@ public class ResultsActivity extends Activity {
 
     private ArrayList<ProductView> _listOfProducts;
 
+    private String _searchQuery;
+
     @BindView(R.id.recyclerView) RecyclerView _recyclerView;
 
-    @BindView(R.id.textViewEmpty)
-    TextView textViewEmpty;
+    @BindView(R.id.textViewQuery)
+    TextView textViewQuery;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,18 +38,27 @@ public class ResultsActivity extends Activity {
         setContentView(R.layout.activity_results);
         ButterKnife.bind(this);
 
+        _listOfProducts.clear();
         _listOfProducts = (ArrayList<ProductView>) getIntent().getSerializableExtra("listOfProducts");
+        _searchQuery = (String) getIntent().getSerializableExtra("searchQuery");
 
         // dismiss notification when user enter results
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nManager.cancel(3453);
 
         if(_listOfProducts.isEmpty()){
-            textViewEmpty.setVisibility(View.VISIBLE);
+            textViewQuery.setVisibility(View.INVISIBLE);
         }else {
-            textViewEmpty.setVisibility(View.INVISIBLE);
+            textViewQuery.setVisibility(View.VISIBLE);
             initializeRecyclerView();
             initializeAdapter();
+        }
+
+        if(_searchQuery != null){
+
+            initializeRecyclerView();
+            initializeAdapter();
+            textViewQuery.setText(_searchQuery +  " (" + _listOfProducts.size() + ")");
         }
     }
 
@@ -56,8 +69,22 @@ public class ResultsActivity extends Activity {
     }
 
     private void initializeAdapter() {
-        RVAdapter adapter = new RVAdapter(_listOfProducts);
+        RVAdapter adapter = new RVAdapter(_listOfProducts, new CustomItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                openProductInBrowser(position);
+            }
+        });
         _recyclerView.setAdapter(adapter);
     }
+
+    private void openProductInBrowser(int position){
+        Intent openBrowser = new Intent();
+        openBrowser.setAction(Intent.ACTION_VIEW);
+        openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
+        openBrowser.setData(Uri.parse(_listOfProducts.get(position).link));
+        startActivity(openBrowser);
+    }
+
 
 }
