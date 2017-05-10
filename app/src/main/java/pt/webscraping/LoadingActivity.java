@@ -21,7 +21,7 @@ import pt.webscraping.entities.ProductView;
 public class LoadingActivity extends Activity
 {
 
-    private ArrayList<ProductView> _results;
+    private ArrayList<ProductView> _results = new ArrayList<>();
 
     private IntentFilter filterComplete = new IntentFilter("pt.webscraping.RESULTS_READY");
     private IntentFilter filterUpdate = new IntentFilter("pt.webscraping.RESULTS_UPDATE");
@@ -32,6 +32,8 @@ public class LoadingActivity extends Activity
 
     private int _downloadStatus = 1;
 
+    private String _searchQuery;
+
     @BindView(R.id.textViewLoading)
     TextView textViewLoading;
 
@@ -41,6 +43,7 @@ public class LoadingActivity extends Activity
             Toast.makeText(context, R.string.notification_download_results_info, Toast.LENGTH_SHORT).show();
 
             _results = (ArrayList<ProductView>) intent.getSerializableExtra("listOfProducts");
+            _searchQuery = (String) intent.getSerializableExtra("searchQuery");
 
             onResultsReady();
         }
@@ -62,7 +65,6 @@ public class LoadingActivity extends Activity
         ButterKnife.bind(this);
 
         _templatesCount = getIntent().getIntExtra("templatesCount", 1);
-
 
         // fullscreen ad
         AdListener listener = new AdListener() {
@@ -120,6 +122,7 @@ public class LoadingActivity extends Activity
     public void redirectActivity() {
         Intent intent = new Intent(this, ResultsActivity.class);
         intent.putExtra("listOfProducts", _results);
+        intent.putExtra("searchQuery", _searchQuery);
         startActivity(intent);
     }
 }
