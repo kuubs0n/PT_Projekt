@@ -32,6 +32,8 @@ public class LoadingActivity extends Activity
 
     private int _downloadStatus = 1;
 
+    private String _searchQuery;
+
     @BindView(R.id.textViewLoading)
     TextView textViewLoading;
 
@@ -41,6 +43,7 @@ public class LoadingActivity extends Activity
             Toast.makeText(context, R.string.notification_download_results_info, Toast.LENGTH_SHORT).show();
 
             _results = (ArrayList<ProductView>) intent.getSerializableExtra("listOfProducts");
+            _searchQuery = (String) intent.getSerializableExtra("searchQuery");
 
             onResultsReady();
         }
@@ -120,6 +123,7 @@ public class LoadingActivity extends Activity
     public void redirectActivity() {
         Intent intent = new Intent(this, ResultsActivity.class);
         intent.putExtra("listOfProducts", _results);
+        intent.putExtra("searchQuery", _searchQuery);
         startActivity(intent);
     }
 }

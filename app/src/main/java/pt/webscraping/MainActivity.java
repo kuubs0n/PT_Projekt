@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
     TextView textViewAdvFilters;
 
     @BindView(R.id.advFilters)
-    ScrollView advFilters;
+    LinearLayout advFilters;
 
     @BindView(R.id.buttonSearch)
     Button buttonSearch;
@@ -47,6 +47,8 @@ public class MainActivity extends Activity {
     ArrayList<Template> templates;
     //list of checkboxes
     ArrayList<CheckBox> checkboxes;
+
+    LinearLayout linearLayoutCheckboxes;
 
 
     private Integer clickCounter = 0;
@@ -80,7 +82,7 @@ public class MainActivity extends Activity {
     }
 
     private void prepareFilters() {
-        LinearLayout linearLayout = new LinearLayout(this);
+        /*LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setLayoutParams( new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT));
 
@@ -93,7 +95,23 @@ public class MainActivity extends Activity {
             linearLayout.addView(checkBox);
             checkboxes.add(checkBox);
         }
-        advFilters.addView(linearLayout);
+        advFilters.addView(linearLayout);*/
+
+        linearLayoutCheckboxes = new LinearLayout(this);
+        linearLayoutCheckboxes.setLayoutParams( new ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT,
+        ScrollView.LayoutParams.MATCH_PARENT));
+        linearLayoutCheckboxes.setOrientation(LinearLayout.VERTICAL);
+        checkboxes = new ArrayList<>();
+        for(Template t : templates)
+        {
+            CheckBox checkBox = new CheckBox(this);
+            checkBox.setChecked(true);
+            checkBox.setText(t.name);
+            linearLayoutCheckboxes.addView(checkBox);
+            checkboxes.add(checkBox);
+        }
+        advFilters.addView(linearLayoutCheckboxes);
+
     }
 
     @OnClick(R.id.textViewAdvFilters)
