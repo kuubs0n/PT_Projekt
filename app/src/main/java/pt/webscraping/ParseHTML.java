@@ -22,11 +22,11 @@ public class ParseHTML {
         for(Element p : productsEl){
 
             products.add(new ProductView(
-                    p.select(template.product.title).text(),
+                    p.select(template.product.title).ownText(),
                     p.select(template.product.author).text(),
                     p.select(template.product.link).attr("abs:href"),
                     p.select(template.product.price).text(),
-                    p.select(template.product.photoURL).attr("src")
+                    p.select(template.product.photoURL).attr("abs:src")
             ));
         }
         return products;

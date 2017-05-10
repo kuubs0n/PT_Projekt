@@ -23,7 +23,7 @@ public class URL implements Serializable{
         return MessageFormat.format(pattern, protocol, domain, path, query, page);
     }
 
-    //protocol domainName path
+    //
     public String getUrl() throws NoSuchFieldException, IllegalAccessException {
         String[] fields = this.pattern
                                 .trim()
