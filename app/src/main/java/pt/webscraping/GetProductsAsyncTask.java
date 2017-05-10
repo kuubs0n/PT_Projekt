@@ -25,13 +25,12 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<Produc
 
     public GetProductsAsyncTask(Template template, String query) {
         this.template = template;
-        setInitValues(query);
+        includeQuery(query);
         this.execute();
     }
 
-    private void setInitValues(String query) {
+    private void includeQuery(String query) {
         template.url.query += query;
-        template.url.page += template.pagination.startsWith.toString();
     }
 
     @Override
@@ -50,7 +49,7 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<Produc
                 doc = Jsoup.connect(url).get();
                 products.addAll(ParseHTML.parseProducts(doc, template));
 
-                Elements nextPageEl = doc.select(template.pagination.nextLink);
+                Elements nextPageEl = doc.select(template.pagination.next);
 
                 if(nextPageEl.isEmpty()){
                     break;

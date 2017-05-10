@@ -11,7 +11,7 @@ import java.util.StringJoiner;
 
 public class URL implements Serializable{
     public String protocol;
-    public String domainName;
+    public String domain;
     public String path;
     public String query;
     public String page;
@@ -20,7 +20,7 @@ public class URL implements Serializable{
 
 
     public String getUrlDepreciated(){
-        return MessageFormat.format(pattern, protocol, domainName, path, query, page);
+        return MessageFormat.format(pattern, protocol, domain, path, query, page);
     }
 
     //protocol domainName path
@@ -42,6 +42,6 @@ public class URL implements Serializable{
     }
 
     public String getBaseUrl() {
-        return protocol + domainName;
+        return protocol + domain;
     }
 }
