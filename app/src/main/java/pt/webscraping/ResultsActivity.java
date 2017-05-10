@@ -33,6 +33,9 @@ public class ResultsActivity extends Activity {
     @BindView(R.id.textViewQuery)
     TextView textViewQuery;
 
+    // random id used to determine our notification
+    private static int NOTIFICATION_ID = 3453;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +48,7 @@ public class ResultsActivity extends Activity {
 
         // dismiss notification when user enter results
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nManager.cancel(3453);
+        nManager.cancel(NOTIFICATION_ID);
 
         if(_listOfProducts.isEmpty()){
             textViewQuery.setVisibility(View.INVISIBLE);
