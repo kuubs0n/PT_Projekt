@@ -3,8 +3,10 @@ package pt.webscraping;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,15 +18,13 @@ import pt.webscraping.entities.Template;
 
 public class GetContentIntentService extends IntentService
 {
-    public static int downloaded = 0;
+    private int _downloadStatus = 1;
+
     // ArrayList of templates received from MainActivity
     private ArrayList<Template> _templates;
 
     // our search query from input
     private String _searchQuery;
-
-    // first template is first step, the next one is the next one step in downloading data
-    private int _dStep = 1;
 
     // Neccesery stuff for Notifications
     private NotificationCompat.Builder _nBuilder;
@@ -35,9 +35,23 @@ public class GetContentIntentService extends IntentService
 
     // ArrayList with result received from our bookshops
     //private ArrayList<ProductView> _results = new ArrayList<>();
-    public static ArrayList<ProductView> _results = new ArrayList<>();
+    private static ArrayList<ProductView> _results = new ArrayList<>();
 
     private ArrayList<GetProductsAsyncTask> _asyncTasks = new ArrayList<>();
+
+    private IntentFilter filter = new IntentFilter("pt.webscraping.RESULTS_UPDATE");
+    private BroadcastReceiver broadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("web.scraper", "BroadcastReceiver - onReceive - RESULTS_UPDATE");
+
+            _downloadStatus += 1;
+
+            updateNotification();
+
+            _results.addAll((ArrayList<ProductView>) intent.getSerializableExtra("products"));
+        }
+    };
 
     public GetContentIntentService()
     {
@@ -58,6 +72,8 @@ public class GetContentIntentService extends IntentService
         // create and display notification for future use
         createNotification();
 
+        registerReceiver(broadcast, filter);
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -68,12 +84,10 @@ public class GetContentIntentService extends IntentService
 
         for(Template template : _templates)
         {
-            _asyncTasks.add(new GetProductsAsyncTask(template, _searchQuery));
-            // we need to display notification with progress
-            //updateNotification();
-            //_dStep++;
+            _asyncTasks.add(new GetProductsAsyncTask(this, template, _searchQuery));
         }
-        while(_templates.size()-1 != this.downloaded) {}
+
+        while (_templates.size() != _downloadStatus) { }
 
     }
 
@@ -89,7 +103,10 @@ public class GetContentIntentService extends IntentService
                 .setContentIntent(contentIntent)
                 .setContentText(getString(R.string.notification_download_results_info))
                 .setProgress(0, 0, false);
+        _nBuilder.mActions.clear();
         _nManager.notify(NOTIFICATION_ID, _nBuilder.build());
+
+        unregisterReceiver(broadcast);
 
         // broadcast receiver to update our activity that we have all results
         Intent broadcastState = new Intent()
@@ -119,11 +136,11 @@ public class GetContentIntentService extends IntentService
         PendingIntent cancelIntent = PendingIntent.getActivity(
                 this,
                 0,
-                new Intent(this, GetContentIntentService.class).putExtra("methodName","cancelNotification"),
+                new Intent(),
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 
-        NotificationCompat.Action cancelAction = new NotificationCompat.Action.Builder(R.drawable.ic_stat_stop, "Cancel", cancelIntent).build();
+        NotificationCompat.Action cancelAction = new NotificationCompat.Action.Builder(R.drawable.ic_stat_stop, getString(R.string.cancel), cancelIntent).build();
 
         _nBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.szymonon)
@@ -139,9 +156,9 @@ public class GetContentIntentService extends IntentService
     // update current notification
     private void updateNotification()
     {
-        float progress = _dStep * 100 / _templates.size();
+        float progress = _downloadStatus * 100 / _templates.size();
 
-        String notificationText = getResources().getString(R.string.notification_download_results_text, _dStep, _templates.size());
+        String notificationText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, _templates.size());
         _nBuilder
                 .setContentText(notificationText)
                 .setProgress(100, Math.round(progress), false);
@@ -149,6 +166,7 @@ public class GetContentIntentService extends IntentService
         _nManager.notify(NOTIFICATION_ID, _nBuilder.build());
     }
 
+    // TODO: not yet used
     public void cancelNotification() {
         Toast.makeText(this, "Cancel :<", Toast.LENGTH_SHORT).show();
         _nManager.cancel(NOTIFICATION_ID);

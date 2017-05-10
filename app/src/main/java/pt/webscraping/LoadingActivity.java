@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import pt.webscraping.entities.ProductView;
 
 public class LoadingActivity extends Activity
@@ -20,11 +23,19 @@ public class LoadingActivity extends Activity
 
     private ArrayList<ProductView> _results;
 
-    private IntentFilter filter = new IntentFilter("pt.webscraping.RESULTS_READY");
+    private IntentFilter filterComplete = new IntentFilter("pt.webscraping.RESULTS_READY");
+    private IntentFilter filterUpdate = new IntentFilter("pt.webscraping.RESULTS_UPDATE");
 
     private AdProvider _ad;
 
-    private BroadcastReceiver broadcast = new BroadcastReceiver() {
+    private int _templatesCount = 1;
+
+    private int _downloadStatus = 1;
+
+    @BindView(R.id.textViewLoading)
+    TextView textViewLoading;
+
+    private BroadcastReceiver broadcastComplete = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Toast.makeText(context, R.string.notification_download_results_info, Toast.LENGTH_SHORT).show();
@@ -35,10 +46,23 @@ public class LoadingActivity extends Activity
         }
     };
 
+    private BroadcastReceiver broadcastUpdate = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            _downloadStatus += 1;
+            String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, _templatesCount);
+            textViewLoading.setText(loadingText);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
+        ButterKnife.bind(this);
+
+        _templatesCount = getIntent().getIntExtra("templatesCount", 1);
+
 
         // fullscreen ad
         AdListener listener = new AdListener() {
@@ -68,14 +92,16 @@ public class LoadingActivity extends Activity
 
         super.onResume();
 
-        registerReceiver(broadcast, filter);
+        registerReceiver(broadcastComplete, filterComplete);
+        registerReceiver(broadcastUpdate, filterUpdate);
     }
 
     @Override
     public void onPause() {
         Log.d("web.scraper", "LoadingActivity - onPause.");
 
-        unregisterReceiver(broadcast);
+        unregisterReceiver(broadcastComplete);
+        unregisterReceiver(broadcastUpdate);
 
         super.onPause();
     }

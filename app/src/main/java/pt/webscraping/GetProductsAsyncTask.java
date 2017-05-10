@@ -1,5 +1,7 @@
 package pt.webscraping;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -19,8 +21,10 @@ import pt.webscraping.entities.Template;
 public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<ProductView>> {
 
     private Template template;
+    private Context context;
 
-    public GetProductsAsyncTask(Template template, String query) {
+    public GetProductsAsyncTask(Context context, Template template, String query) {
+        this.context = context;
         this.template = template;
         includeQuery(query);
         this.execute();
@@ -65,8 +69,13 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<Produc
 
     @Override
     protected void onPostExecute(ArrayList<ProductView> products) {
-        GetContentIntentService.downloaded += 1;
-        GetContentIntentService._results.addAll(products);
+        //GetContentIntentService.updateDownloadCount();
+        //GetContentIntentService.addProducts(products);
+        // broadcast receiver send!
+        Intent broadcastState = new Intent()
+                .setAction("pt.webscraping.RESULTS_UPDATE")
+                .putExtra("products", products);
+        this.context.sendBroadcast(broadcastState);
     }
 }
 
