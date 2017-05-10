@@ -1,84 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
     android:animateLayoutChanges="true"
+    android:fillViewport="true"
     >
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/szymonoff"
-            android:id="@+id/imageButton"
-            android:visibility="gone"
-            android:onClick="easterEgg" />
-
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text = "WEB SCRAPER"
-            android:textSize="24dp"
-            android:gravity="center_horizontal"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_centerVertical="true"
-            android:id="@+id/textInputLayout">
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/szymonoff"
+                    android:id="@+id/imageButton"
+                    android:visibility="gone"
+                    android:onClick="easterEgg" />
 
-                <EditText
-                    android:id="@+id/editTextQuery"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text = "WEB SCRAPER"
+                    android:textSize="24dp"
+                    android:gravity="center_horizontal"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="80dp"
+                    android:layout_marginBottom="8dp"
+
+                    android:id="@+id/textInputLayout">
+
+                        <EditText
+                            android:id="@+id/editTextQuery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:hint="BOOK NAME"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/buttonSearch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:hint="BOOK NAME"
-                />
-        </android.support.design.widget.TextInputLayout>
+                    android:layout_below="@id/textInputLayout"
+                    android:text="Search"
+                    android:onClick="searchItems" />
 
-        <Button
-            android:id="@+id/buttonSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_below="@id/textInputLayout"
-            android:text="Search"
-            android:onClick="searchItems" />
+                <TextView
+                    android:id="@+id/textViewAdvFilters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/advanced_filters_hidden"
+                    android:layout_below="@+id/buttonSearch"
+                    android:layout_marginTop="15dp"/>
 
-        <TextView
-            android:id="@+id/textViewAdvFilters"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/advanced_filters_hidden"
-            android:layout_below="@+id/buttonSearch"
-            android:layout_marginTop="15dp"/>
+                <LinearLayout
+                    android:id="@+id/advFilters"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_below="@+id/textViewAdvFilters"
+                        >
 
-        <ScrollView
-            android:id="@+id/advFilters"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/textViewAdvFilters"
-                >
+                </LinearLayout>
 
-        </ScrollView>
+                        <com.google.android.gms.ads.AdView
+                            android:id="@+id/adView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="bottom"
+                            android:layout_marginBottom="10dp"
+                            ads:adSize="BANNER"
+                            ads:adUnitId="@string/admob_baner_ad_unit_id"></com.google.android.gms.ads.AdView>
 
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/admob_baner_ad_unit_id">
-        </com.google.android.gms.ads.AdView>
+        </RelativeLayout>
 
-</RelativeLayout>
+</ScrollView>
