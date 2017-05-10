@@ -23,7 +23,7 @@ import pt.webscraping.entities.ProductView;
 
 public class ResultsActivity extends Activity {
 
-    private ArrayList<ProductView> _listOfProducts;
+    private ArrayList<ProductView> _listOfProducts = new ArrayList<>();
 
     private String _searchQuery;
 
