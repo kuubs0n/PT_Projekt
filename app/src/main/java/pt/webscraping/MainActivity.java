@@ -105,32 +105,6 @@ public class MainActivity extends Activity {
             advFilters.setVisibility(View.VISIBLE);
             textViewAdvFilters.setText(R.string.advanced_filters_shown);
         }
-        /*
-        CheckBox ch = new CheckBox(this);
-        ch.setText("a jaaaa");
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setLayoutParams( new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT));
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-        linearLayout.addView(ch);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setView(linearLayout);
-        alertDialogBuilder.setTitle("Select");
-        alertDialogBuilder.setMessage("Message");
-        alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        alertDialogBuilder.show();
-        */
     }
 
     @OnClick(R.id.buttonSearch)
@@ -157,8 +131,7 @@ public class MainActivity extends Activity {
 
             // redirect to loading screen
             Intent intent = new Intent(this, LoadingActivity.class)
-                .putExtra("templatesCount", getSelectedTemplates().size())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                .putExtra("templatesCount", getSelectedTemplates().size());
             startActivity(intent);
         }
         else
