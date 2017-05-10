@@ -27,7 +27,8 @@ public class ResultsActivity extends Activity {
 
     private String _searchQuery;
 
-    @BindView(R.id.recyclerView) RecyclerView _recyclerView;
+    @BindView(R.id.recyclerView)
+    RecyclerView _recyclerView;
 
     @BindView(R.id.textViewQuery)
     TextView textViewQuery;
