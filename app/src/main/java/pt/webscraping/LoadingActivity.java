@@ -44,8 +44,8 @@ public class LoadingActivity extends Activity
         AdListener listener = new AdListener() {
             @Override
             public void onAdLoaded() {
-                // TODO: debug purposes
-                onResultsReady();
+                // TODO: to debug purposes - comment
+                //onResultsReady();
             }
             @Override
             public void onAdClosed() {
@@ -85,9 +85,9 @@ public class LoadingActivity extends Activity
 
         if (_ad.isLoaded()) {
             // TODO: only for debug purposes, removed to disable fullscreen ad
-            _ad.showInterstitialAd();
+            //_ad.showInterstitialAd();
             // TODO: only for debug purposes, redirect
-            //redirectActivity();
+            redirectActivity();
         }
     }
 

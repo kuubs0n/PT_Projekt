@@ -7,8 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-
-import org.jsoup.nodes.Document;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -37,6 +36,8 @@ public class GetContentIntentService extends IntentService
     // ArrayList with result received from our bookshops
     //private ArrayList<ProductView> _results = new ArrayList<>();
     public static ArrayList<ProductView> _results = new ArrayList<>();
+
+    private ArrayList<GetProductsAsyncTask> _asyncTasks = new ArrayList<>();
 
     public GetContentIntentService()
     {
@@ -67,7 +68,7 @@ public class GetContentIntentService extends IntentService
 
         for(Template template : _templates)
         {
-            new GetProductsAsyncTask(template, _searchQuery);
+            _asyncTasks.add(new GetProductsAsyncTask(template, _searchQuery));
             // we need to display notification with progress
             //updateNotification();
             //_dStep++;
@@ -107,8 +108,20 @@ public class GetContentIntentService extends IntentService
         _nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         String notificationText = getResources().getString(R.string.notification_download_results_text, 1, _templates.size());
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent cancelIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                this,
+                0,
+                new Intent(),
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        PendingIntent cancelIntent = PendingIntent.getActivity(
+                this,
+                0,
+                new Intent(this, GetContentIntentService.class).putExtra("methodName","cancelNotification"),
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
 
         NotificationCompat.Action cancelAction = new NotificationCompat.Action.Builder(R.drawable.ic_stat_stop, "Cancel", cancelIntent).build();
 
@@ -136,8 +149,10 @@ public class GetContentIntentService extends IntentService
         _nManager.notify(NOTIFICATION_ID, _nBuilder.build());
     }
 
-    public void cancelAction()
-    {
+    public void cancelNotification() {
         Toast.makeText(this, "Cancel :<", Toast.LENGTH_SHORT).show();
+        _nManager.cancel(NOTIFICATION_ID);
+
+        _asyncTasks.forEach( (task) -> task.cancel(true) );
     }
 }
