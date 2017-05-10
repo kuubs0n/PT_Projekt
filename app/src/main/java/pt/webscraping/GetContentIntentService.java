@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -34,21 +32,24 @@ public class GetContentIntentService extends IntentService
     private static int NOTIFICATION_ID = 3453;
 
     // ArrayList with result received from our bookshops
-    //private ArrayList<ProductView> _results = new ArrayList<>();
-    private static ArrayList<ProductView> _results = new ArrayList<>();
+    private ArrayList<ProductView> _results = new ArrayList<>();
 
+    // ArrayList of async tasks, the number depends on templates (bookshops) count
     private ArrayList<GetProductsAsyncTask> _asyncTasks = new ArrayList<>();
 
+    // intent filter when broadcast receiver inform about updated data
     private IntentFilter filter = new IntentFilter("pt.webscraping.RESULTS_UPDATE");
+
     private BroadcastReceiver broadcast = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("web.scraper", "BroadcastReceiver - onReceive - RESULTS_UPDATE");
-
+            // increment to inform that async task ended his work
             _downloadStatus += 1;
 
+            // update notification text with progress
             updateNotification();
 
+            // add results received from async task
             _results.addAll((ArrayList<ProductView>) intent.getSerializableExtra("products"));
         }
     };
@@ -59,10 +60,7 @@ public class GetContentIntentService extends IntentService
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
-        Log.d("web.scraper", "GetContentIntentService - start.");
-
+    public int onStartCommand(Intent intent, int flags, int startId) {
         // receive templates to use with
         _templates = (ArrayList<Template>) intent.getSerializableExtra("templates");
 
@@ -72,28 +70,26 @@ public class GetContentIntentService extends IntentService
         // create and display notification for future use
         createNotification();
 
+        // register receiver when service is starting
         registerReceiver(broadcast, filter);
 
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
-    protected void onHandleIntent(Intent intent)
-    {
-        Log.d("web.scraper", "GetContentIntentService - onHandleIntent");
-
+    protected void onHandleIntent(Intent intent) {
+        // loop through templates to create async tasks
         for(Template template : _templates)
         {
             _asyncTasks.add(new GetProductsAsyncTask(this, template, _searchQuery));
         }
 
+        // service is waiting to complete all downloads in async tasks
         while (_templates.size() != _downloadStatus) { }
-
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         // notification stuff
         Intent targetIntent = new Intent(this, ResultsActivity.class);
         targetIntent.putExtra("listOfProducts", _results);
@@ -103,25 +99,27 @@ public class GetContentIntentService extends IntentService
                 .setContentIntent(contentIntent)
                 .setContentText(getString(R.string.notification_download_results_info))
                 .setProgress(0, 0, false);
+
+        // remove cancel action
         _nBuilder.mActions.clear();
+
         _nManager.notify(NOTIFICATION_ID, _nBuilder.build());
 
+        // disable receiver because service is stopping
         unregisterReceiver(broadcast);
 
         // broadcast receiver to update our activity that we have all results
         Intent broadcastState = new Intent()
-            .setAction("pt.webscraping.RESULTS_READY")
-            .putExtra("listOfProducts", _results);
+                .setAction("pt.webscraping.RESULTS_READY")
+                .putExtra("listOfProducts", _results)
+                .putExtra("searchQuery", _searchQuery);
         sendBroadcast(broadcastState);
-
-        Log.d("web.scraper", "GetContentIntentService - done.");
     }
 
     /*
      * Notifications
      */
-    private void createNotification()
-    {
+    private void createNotification() {
         _nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         String notificationText = getResources().getString(R.string.notification_download_results_text, 1, _templates.size());
@@ -133,6 +131,7 @@ public class GetContentIntentService extends IntentService
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 
+        // TODO: make it working xD
         PendingIntent cancelIntent = PendingIntent.getActivity(
                 this,
                 0,
@@ -154,8 +153,7 @@ public class GetContentIntentService extends IntentService
     }
 
     // update current notification
-    private void updateNotification()
-    {
+    private void updateNotification() {
         float progress = _downloadStatus * 100 / _templates.size();
 
         String notificationText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, _templates.size());
@@ -168,7 +166,6 @@ public class GetContentIntentService extends IntentService
 
     // TODO: not yet used
     public void cancelNotification() {
-        Toast.makeText(this, "Cancel :<", Toast.LENGTH_SHORT).show();
         _nManager.cancel(NOTIFICATION_ID);
 
         _asyncTasks.forEach( (task) -> task.cancel(true) );
