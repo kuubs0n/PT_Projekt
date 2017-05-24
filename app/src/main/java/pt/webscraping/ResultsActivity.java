@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pt.webscraping.entities.ProductView;
+import pt.webscraping.entities.SearchResult;
 
 /**
  * Created by Kuba on 11-Apr-2017.
@@ -43,16 +44,16 @@ public class ResultsActivity extends Activity {
         ButterKnife.bind(this);
 
         _listOfProducts.clear();
-        _listOfProducts = (ArrayList<ProductView>) getIntent().getSerializableExtra("listOfProducts");
-        _searchQuery = (String) getIntent().getSerializableExtra("searchQuery");
+        _listOfProducts = SearchResult.results;
+        _searchQuery = SearchResult.searchQuery;
 
         // dismiss notification when user enter results
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nManager.cancel(NOTIFICATION_ID);
 
-        if(_listOfProducts.isEmpty()){
+        if (_listOfProducts.isEmpty()){
             textViewQuery.setVisibility(View.INVISIBLE);
-        }else {
+        } else {
             textViewQuery.setVisibility(View.VISIBLE);
             initializeRecyclerView();
             initializeAdapter();

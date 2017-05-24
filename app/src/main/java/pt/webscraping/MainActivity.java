@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import pt.webscraping.entities.SearchResult;
 import pt.webscraping.entities.Template;
 
 public class MainActivity extends Activity {
@@ -82,21 +83,6 @@ public class MainActivity extends Activity {
     }
 
     private void prepareFilters() {
-        /*LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setLayoutParams( new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT));
-
-        checkboxes = new ArrayList<>();
-        for(Template t : templates)
-        {
-            CheckBox checkBox = new CheckBox(this);
-            checkBox.setChecked(true);
-            checkBox.setText(t.name);
-            linearLayout.addView(checkBox);
-            checkboxes.add(checkBox);
-        }
-        advFilters.addView(linearLayout);*/
-
         linearLayoutCheckboxes = new LinearLayout(this);
         linearLayoutCheckboxes.setLayoutParams( new ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT,
         ScrollView.LayoutParams.MATCH_PARENT));
@@ -142,14 +128,14 @@ public class MainActivity extends Activity {
                 return;
             }
 
-            Intent mServiceIntent = new Intent(this, GetContentIntentService.class)
-                .putExtra("templates", getSelectedTemplates())
-                .putExtra("searchQuery", query);
+            SearchResult.searchQuery = query;
+            SearchResult.templates = getSelectedTemplates();
+
+            Intent mServiceIntent = new Intent(this, GetContentIntentService.class);
             this.startService(mServiceIntent);
 
             // redirect to loading screen
-            Intent intent = new Intent(this, LoadingActivity.class)
-                .putExtra("templatesCount", getSelectedTemplates().size());
+            Intent intent = new Intent(this, LoadingActivity.class);
             startActivity(intent);
         }
         else

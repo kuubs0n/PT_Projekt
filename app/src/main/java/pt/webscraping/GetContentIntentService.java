@@ -13,14 +13,12 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import pt.webscraping.entities.ProductView;
+import pt.webscraping.entities.SearchResult;
 import pt.webscraping.entities.Template;
 
 public class GetContentIntentService extends IntentService
 {
     private int _downloadStatus = 1;
-
-    // ArrayList of templates received from MainActivity
-    private ArrayList<Template> _templates;
 
     // our search query from input
     private String _searchQuery;
@@ -50,8 +48,12 @@ public class GetContentIntentService extends IntentService
             // update notification text with progress
             updateNotification();
 
+            Log.d("web.scraper", "GetContentIntentService - onReceive before - results.size() = " + _results.size());
+
             // add results received from async task
             _results.addAll((ArrayList<ProductView>) intent.getSerializableExtra("products"));
+
+            Log.d("web.scraper", "GetContentIntentService - onReceive after - results.size() = " + _results.size());
         }
     };
 
@@ -62,13 +64,7 @@ public class GetContentIntentService extends IntentService
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // receive templates to use with
-        _templates = (ArrayList<Template>) intent.getSerializableExtra("templates");
-
         _results.clear();
-
-        // receive search query typed by user
-        _searchQuery = (String) intent.getStringExtra("searchQuery");
 
         // create and display notification for future use
         createNotification();
@@ -84,23 +80,23 @@ public class GetContentIntentService extends IntentService
         Log.d("web.scraper", "GetContentIntentService - onHandleIntent");
 
         // loop through templates to create async tasks
-        for(Template template : _templates)
+        for(Template template : SearchResult.templates)
         {
-            _asyncTasks.add(new GetProductsAsyncTask(this, template, _searchQuery));
+            _asyncTasks.add(new GetProductsAsyncTask(this, template, SearchResult.searchQuery));
         }
 
         // service is waiting to complete all downloads in async tasks
-        while (_templates.size() != _downloadStatus) { }
+        while (SearchResult.templates.size() != _downloadStatus) { }
     }
 
     @Override
     public void onDestroy() {
         _asyncTasks.clear();
 
+        Log.d("web.scraper", "GetContentIntentService - onDestroy - results.size() = " + _results.size());
+
         // notification stuff
         Intent targetIntent = new Intent(this, ResultsActivity.class);
-        targetIntent.putExtra("listOfProducts", _results);
-        targetIntent.putExtra("searchQuery", _searchQuery);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, targetIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         _nBuilder
@@ -116,11 +112,11 @@ public class GetContentIntentService extends IntentService
         // disable receiver because service is stopping
         unregisterReceiver(broadcast);
 
+        SearchResult.results = _results;
+
         // broadcast receiver to update our activity that we have all results
         Intent broadcastState = new Intent()
-            .setAction("pt.webscraping.RESULTS_READY")
-            .putExtra("listOfProducts", _results)
-            .putExtra("searchQuery", _searchQuery);
+            .setAction("pt.webscraping.RESULTS_READY");
         sendBroadcast(broadcastState);
     }
 
@@ -130,7 +126,7 @@ public class GetContentIntentService extends IntentService
     private void createNotification() {
         _nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        String notificationText = getResources().getString(R.string.notification_download_results_text, 1, _templates.size());
+        String notificationText = getResources().getString(R.string.notification_download_results_text, 1, SearchResult.templates.size());
 
         PendingIntent contentIntent = PendingIntent.getActivity(
                 this,
@@ -162,9 +158,9 @@ public class GetContentIntentService extends IntentService
 
     // update current notification
     private void updateNotification() {
-        float progress = _downloadStatus * 100 / _templates.size();
+        float progress = _downloadStatus * 100 / SearchResult.templates.size();
 
-        String notificationText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, _templates.size());
+        String notificationText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, SearchResult.templates.size());
         _nBuilder
                 .setContentText(notificationText)
                 .setProgress(100, Math.round(progress), false);

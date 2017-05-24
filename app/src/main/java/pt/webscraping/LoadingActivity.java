@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pt.webscraping.entities.ProductView;
+import pt.webscraping.entities.SearchResult;
 
 public class LoadingActivity extends Activity
 {
@@ -42,8 +43,7 @@ public class LoadingActivity extends Activity
         public void onReceive(Context context, Intent intent) {
             Toast.makeText(context, R.string.notification_download_results_info, Toast.LENGTH_SHORT).show();
 
-            _results = (ArrayList<ProductView>) intent.getSerializableExtra("listOfProducts");
-            _searchQuery = (String) intent.getSerializableExtra("searchQuery");
+            SearchResult.results = (ArrayList<ProductView>) intent.getSerializableExtra("listOfProducts");
 
             onResultsReady();
         }
@@ -52,13 +52,13 @@ public class LoadingActivity extends Activity
     private BroadcastReceiver broadcastUpdate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (_templatesCount > _downloadStatus)
+            if (SearchResult.templates.size() > _downloadStatus)
             {
                 _downloadStatus += 1;
 
                 Log.d("web.scraper", "LoadingActivity - downloadStatus = " + _downloadStatus);
 
-                String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, _templatesCount);
+                String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, SearchResult.templates.size());
                 textViewLoading.setText(loadingText);
             }
         }
@@ -70,10 +70,10 @@ public class LoadingActivity extends Activity
         setContentView(R.layout.activity_loading);
         ButterKnife.bind(this);
 
-        _templatesCount = getIntent().getIntExtra("templatesCount", 1);
-        Log.d("web.scraper", "LoadingActivity - templatesCount = " + _templatesCount);
 
-        String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, _templatesCount);
+        Log.d("web.scraper", "LoadingActivity - templatesCount = " + SearchResult.templates.size());
+
+        String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, SearchResult.templates.size());
         textViewLoading.setText(loadingText);
 
         // fullscreen ad
@@ -138,8 +138,6 @@ public class LoadingActivity extends Activity
 
     public void redirectActivity() {
         Intent intent = new Intent(this, ResultsActivity.class);
-        intent.putExtra("listOfProducts", _results);
-        intent.putExtra("searchQuery", _searchQuery);
         startActivity(intent);
     }
 }
