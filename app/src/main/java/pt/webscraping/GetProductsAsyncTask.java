@@ -69,8 +69,7 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<Produc
 
     @Override
     protected void onPostExecute(ArrayList<ProductView> products) {
-        //GetContentIntentService.updateDownloadCount();
-        //GetContentIntentService.addProducts(products);
+        Log.d("web.scraper", "GetProductsAsyncTask - onPostExecute - products.size() = " + products.size());
         // broadcast receiver send!
         Intent broadcastState = new Intent()
                 .setAction("pt.webscraping.RESULTS_UPDATE")
