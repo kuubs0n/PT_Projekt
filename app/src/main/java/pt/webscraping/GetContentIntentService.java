@@ -65,6 +65,8 @@ public class GetContentIntentService extends IntentService
         // receive templates to use with
         _templates = (ArrayList<Template>) intent.getSerializableExtra("templates");
 
+        _results.clear();
+
         // receive search query typed by user
         _searchQuery = (String) intent.getStringExtra("searchQuery");
 
@@ -151,7 +153,7 @@ public class GetContentIntentService extends IntentService
                 .setSmallIcon(R.drawable.szymonon)
                 .setContentTitle(getString(R.string.notification_download_title))
                 .setContentText(notificationText)
-                .addAction(cancelAction)
+                //.addAction(cancelAction)
                 .setProgress(100, 0, false)
                 .setContentIntent(contentIntent);
 
