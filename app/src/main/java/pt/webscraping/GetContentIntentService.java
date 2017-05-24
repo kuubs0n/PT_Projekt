@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -45,7 +46,7 @@ public class GetContentIntentService extends IntentService
         public void onReceive(Context context, Intent intent) {
             // increment to inform that async task ended his work
             _downloadStatus += 1;
-
+            Log.d("web.scraper", "downloadStatus = " + _downloadStatus);
             // update notification text with progress
             updateNotification();
 
@@ -78,6 +79,8 @@ public class GetContentIntentService extends IntentService
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d("web.scraper", "GetContentIntentService - onHandleIntent");
+
         // loop through templates to create async tasks
         for(Template template : _templates)
         {
@@ -90,6 +93,8 @@ public class GetContentIntentService extends IntentService
 
     @Override
     public void onDestroy() {
+        _asyncTasks.clear();
+
         // notification stuff
         Intent targetIntent = new Intent(this, ResultsActivity.class);
         targetIntent.putExtra("listOfProducts", _results);
