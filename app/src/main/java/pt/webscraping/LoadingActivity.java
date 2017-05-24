@@ -130,10 +130,10 @@ public class LoadingActivity extends Activity
         Log.d("web.scraper", "LoadingActivity - onResultsReady.");
 
         // TODO: only for debug purposes, removed to disable fullscreen ad
-        //_ad.showInterstitialAd();
+        _ad.showInterstitialAd();
 
         // TODO: only for debug purposes, redirect
-        redirectActivity();
+        // redirectActivity();
     }
 
     public void redirectActivity() {
