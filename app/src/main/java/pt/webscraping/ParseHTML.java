@@ -21,13 +21,18 @@ public class ParseHTML {
 
         for(Element p : productsEl){
 
-            products.add(new ProductView(
-                    p.select(template.product.title).text(),
-                    p.select(template.product.author).text(),
-                    p.select(template.product.link).attr("abs:href"),
-                    p.select(template.product.price).first().ownText(),
-                    p.select(template.product.photoURL).attr("abs:src")
-            ));
+            try {
+
+                products.add(new ProductView(
+                        p.select(template.product.title).text(),
+                        p.select(template.product.author).text(),
+                        p.select(template.product.link).attr("abs:href"),
+                        p.select(template.product.price).first().ownText(),
+                        p.select(template.product.photoURL).attr("abs:src")
+                ));
+            } catch(Exception e){
+                continue;
+            }
         }
         return products;
     }

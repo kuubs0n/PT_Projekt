@@ -16,14 +16,8 @@ public class URL implements Serializable{
     public String query;
     public String page;
     public String pattern;
-    public Boolean encode;
 
 
-    public String getUrlDepreciated(){
-        return MessageFormat.format(pattern, protocol, domain, path, query, page);
-    }
-
-    //
     public String getUrl() throws NoSuchFieldException, IllegalAccessException {
         String[] fields = this.pattern
                                 .trim()

@@ -9,6 +9,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import pt.webscraping.entities.ProductView;
@@ -24,14 +26,19 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<Produc
     private Context context;
 
     public GetProductsAsyncTask(Context context, Template template, String query) {
-        this.context = context;
-        this.template = template;
-        includeQuery(query);
-        this.execute();
+        try {
+            this.context = context;
+            this.template = template;
+            includeQuery(query);
+            this.execute();
+
+        } catch (UnsupportedEncodingException e) {
+            Log.d("includeQuery", "encode failed");
+        }
     }
 
-    private void includeQuery(String query) {
-        template.url.query += query;
+    private void includeQuery(String query) throws UnsupportedEncodingException {
+        template.url.query += URLEncoder.encode(query, "UTF-8");
     }
 
     @Override
@@ -45,7 +52,7 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<Produc
         try {
             String url = template.url.getUrl();
 
-            while(isNextPage == true) {
+            while(true) {
 
                 doc = Jsoup.connect(url).get();
                 products.addAll(ParseHTML.parseProducts(doc, template));
@@ -71,10 +78,11 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<Produc
     protected void onPostExecute(ArrayList<ProductView> products) {
         Log.d("web.scraper", "GetProductsAsyncTask - onPostExecute - products.size() = " + products.size());
         // broadcast receiver send!
-        Intent broadcastState = new Intent()
+
+      /*  Intent broadcastState = new Intent()
                 .setAction("pt.webscraping.RESULTS_UPDATE")
                 .putExtra("products", products);
-        this.context.sendBroadcast(broadcastState);
+        this.context.sendBroadcast(broadcastState);*/
     }
 }
 
