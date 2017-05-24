@@ -52,9 +52,15 @@ public class LoadingActivity extends Activity
     private BroadcastReceiver broadcastUpdate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            _downloadStatus += 1;
-            String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, _templatesCount);
-            textViewLoading.setText(loadingText);
+            if (_templatesCount > _downloadStatus)
+            {
+                _downloadStatus += 1;
+
+                Log.d("web.scraper", "LoadingActivity - downloadStatus = " + _downloadStatus);
+
+                String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, _templatesCount);
+                textViewLoading.setText(loadingText);
+            }
         }
     };
 
@@ -65,6 +71,10 @@ public class LoadingActivity extends Activity
         ButterKnife.bind(this);
 
         _templatesCount = getIntent().getIntExtra("templatesCount", 1);
+        Log.d("web.scraper", "LoadingActivity - templatesCount = " + _templatesCount);
+
+        String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, _templatesCount);
+        textViewLoading.setText(loadingText);
 
         // fullscreen ad
         AdListener listener = new AdListener() {
@@ -89,6 +99,14 @@ public class LoadingActivity extends Activity
     }
 
     @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        _downloadStatus = 1;
+    }
+
+    @Override
     public void onResume() {
         Log.d("web.scraper", "LoadingActivity - onResume.");
 
@@ -102,8 +120,8 @@ public class LoadingActivity extends Activity
     public void onPause() {
         Log.d("web.scraper", "LoadingActivity - onPause.");
 
-        unregisterReceiver(broadcastComplete);
         unregisterReceiver(broadcastUpdate);
+        unregisterReceiver(broadcastComplete);
 
         super.onPause();
     }
@@ -111,12 +129,11 @@ public class LoadingActivity extends Activity
     public void onResultsReady() {
         Log.d("web.scraper", "LoadingActivity - onResultsReady.");
 
-        if (_ad.isLoaded()) {
-            // TODO: only for debug purposes, removed to disable fullscreen ad
-            //_ad.showInterstitialAd();
-            // TODO: only for debug purposes, redirect
-            redirectActivity();
-        }
+        // TODO: only for debug purposes, removed to disable fullscreen ad
+        //_ad.showInterstitialAd();
+
+        // TODO: only for debug purposes, redirect
+        redirectActivity();
     }
 
     public void redirectActivity() {
