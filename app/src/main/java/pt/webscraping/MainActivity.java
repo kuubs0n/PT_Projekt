@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 
         // odebranie szablonow
         Intent i = getIntent();
-        templates = (ArrayList<Template>) i.getSerializableExtra("templates");
+        //templates = (ArrayList<Template>) i.getSerializableExtra("templates");
 
         // filtry księgarni
         prepareFilters();
@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
         ScrollView.LayoutParams.MATCH_PARENT));
         linearLayoutCheckboxes.setOrientation(LinearLayout.VERTICAL);
         checkboxes = new ArrayList<>();
-        for(Template t : templates)
+        for(Template t : SearchResult.templates)
         {
             CheckBox checkBox = new CheckBox(this);
             checkBox.setChecked(true);
@@ -121,9 +121,9 @@ public class MainActivity extends Activity {
         {
             QueryHistory.add(this, query);
             // service
-            ArrayList<Template> selectedTemplates = getSelectedTemplates();
+            SearchResult.selectedTemplates = getSelectedTemplates();
 
-            if(selectedTemplates.isEmpty()){
+            if(SearchResult.selectedTemplates.isEmpty()){
                 advancedFiltersSetError(getString(R.string.filters_no_selected_error));
                 return;
             }
@@ -137,6 +137,7 @@ public class MainActivity extends Activity {
             // redirect to loading screen
             Intent intent = new Intent(this, LoadingActivity.class);
             startActivity(intent);
+            finish();
         }
         else
         {
@@ -158,7 +159,7 @@ public class MainActivity extends Activity {
 
         for(CheckBox checkBox : checkboxes){
             if(checkBox.isChecked()) {
-                for (Template template : templates) {
+                for (Template template : SearchResult.templates) {
                     if (template.name.equals(checkBox.getText().toString())) {
                         selectedTemplates.add(template);
                     }

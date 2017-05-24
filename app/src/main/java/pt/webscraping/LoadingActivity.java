@@ -43,8 +43,6 @@ public class LoadingActivity extends Activity
         public void onReceive(Context context, Intent intent) {
             Toast.makeText(context, R.string.notification_download_results_info, Toast.LENGTH_SHORT).show();
 
-            SearchResult.results = (ArrayList<ProductView>) intent.getSerializableExtra("listOfProducts");
-
             onResultsReady();
         }
     };
@@ -140,4 +138,12 @@ public class LoadingActivity extends Activity
         Intent intent = new Intent(this, ResultsActivity.class);
         startActivity(intent);
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(this, MainActivity.class);
+        startActivity(setIntent);
+        finish();
+    }
+
 }

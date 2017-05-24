@@ -1,9 +1,13 @@
 package pt.webscraping;
 
+import android.util.Log;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import pt.webscraping.entities.ProductView;
 import pt.webscraping.entities.Template;
@@ -23,14 +27,17 @@ public class ParseHTML {
 
             try {
 
+                String price = p.select(template.product.price).first().ownText().trim();
+
                 products.add(new ProductView(
                         p.select(template.product.title).text(),
                         p.select(template.product.author).text(),
                         p.select(template.product.link).attr("abs:href"),
-                        p.select(template.product.price).first().ownText(),
+                        price.replaceAll("[^0-9?!\\,\\.]","").replaceAll(",", "."),
                         p.select(template.product.photoURL).attr("abs:src")
                 ));
             } catch(Exception e){
+                Log.d("PATTERN EXCEPTION", e.getMessage());
                 continue;
             }
         }

@@ -3,7 +3,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="@color/cardview_light_background">
+    android:background="@color/cardview_light_background"
+    android:id="@+id/linearLayoutResults">
 
     <TextView
         android:layout_width="wrap_content"
@@ -16,11 +17,5 @@
         android:id="@+id/textViewQuery"/>
 
     <View android:layout_marginBottom="5dp" style="@style/Divider"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/recyclerView"
-        />
 
 </LinearLayout>

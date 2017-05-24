@@ -8,7 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,11 +30,11 @@ public class ResultsActivity extends Activity {
 
     private String _searchQuery;
 
-    @BindView(R.id.recyclerView)
-    RecyclerView _recyclerView;
-
     @BindView(R.id.textViewQuery)
     TextView textViewQuery;
+
+    @BindView(R.id.linearLayoutResults)
+    LinearLayout linearLayout;
 
     // random id used to determine our notification
     private static int NOTIFICATION_ID = 3453;
@@ -43,44 +45,53 @@ public class ResultsActivity extends Activity {
         setContentView(R.layout.activity_results);
         ButterKnife.bind(this);
 
-        _listOfProducts.clear();
-        _listOfProducts = SearchResult.results;
         _searchQuery = SearchResult.searchQuery;
 
         // dismiss notification when user enter results
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nManager.cancel(NOTIFICATION_ID);
 
-        if (_listOfProducts.isEmpty()){
-            textViewQuery.setVisibility(View.INVISIBLE);
-        } else {
+        if(SearchResult.results.keySet().isEmpty()){
             textViewQuery.setVisibility(View.VISIBLE);
-            initializeRecyclerView();
-            initializeAdapter();
-        }
+            textViewQuery.setText("NO RESULTS");
+        }else{
+            int counter = 0;
+            for(String templateName : SearchResult.results.keySet()){
+                counter += SearchResult.results.get(templateName).size();
+                TextView textViewShopName = new TextView(this);
+                textViewShopName.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                textViewShopName.setGravity(Gravity.CENTER_HORIZONTAL);
+                textViewShopName.setText(templateName + "(" + SearchResult.results.get(templateName).size() + ")");
+                linearLayout.addView(textViewShopName);
 
-        if(_searchQuery != null){
-
-            initializeRecyclerView();
-            initializeAdapter();
-            textViewQuery.setText(_searchQuery +  " (" + _listOfProducts.size() + ")");
+                RecyclerView recyclerView = new RecyclerView(this);
+                recyclerView.setLayoutParams(new RecyclerView.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                initializeRecyclerView(recyclerView);
+                initializeAdapter(recyclerView, SearchResult.results.get(templateName));
+                linearLayout.addView(recyclerView);
+            }
+            textViewQuery.setText(_searchQuery + "(" + counter + ")");
         }
     }
 
-    private void initializeRecyclerView(){
-        _recyclerView.setHasFixedSize(true);
+    private void initializeRecyclerView(RecyclerView recycler){
+        recycler.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        _recyclerView.setLayoutManager(linearLayoutManager);
+        recycler.setLayoutManager(linearLayoutManager);
     }
 
-    private void initializeAdapter() {
-        RVAdapter adapter = new RVAdapter(_listOfProducts, new CustomItemClickListener() {
+    private void initializeAdapter(RecyclerView recycler, ArrayList<ProductView> products) {
+        RVAdapter adapter = new RVAdapter(products, new CustomItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 openProductInBrowser(position);
             }
         });
-        _recyclerView.setAdapter(adapter);
+        recycler.setAdapter(adapter);
     }
 
     private void openProductInBrowser(int position){
@@ -89,6 +100,13 @@ public class ResultsActivity extends Activity {
         openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
         openBrowser.setData(Uri.parse(_listOfProducts.get(position).link));
         startActivity(openBrowser);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(this, MainActivity.class);
+        startActivity(setIntent);
+        finish();
     }
 
 

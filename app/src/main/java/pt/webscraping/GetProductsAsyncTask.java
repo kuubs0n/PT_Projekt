@@ -12,37 +12,36 @@ import org.jsoup.select.Elements;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import pt.webscraping.entities.ProductView;
+import pt.webscraping.entities.SearchResult;
 import pt.webscraping.entities.Template;
 
 /**
  * Created by szymon on 09.05.2017.
  */
 
-public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<ProductView>> {
+public class GetProductsAsyncTask extends AsyncTask<Void, Void, Void> {
 
     private Template template;
     private Context context;
+    private String query;
 
     public GetProductsAsyncTask(Context context, Template template, String query) {
-        try {
-            this.context = context;
-            this.template = template;
-            includeQuery(query);
-            this.execute();
-
-        } catch (UnsupportedEncodingException e) {
-            Log.d("includeQuery", "encode failed");
-        }
+        this.context = context;
+        this.template = template;
+        this.query = query;
+        this.execute();
     }
 
-    private void includeQuery(String query) throws UnsupportedEncodingException {
-        template.url.query += URLEncoder.encode(query, "UTF-8");
+    private String encode(String query) throws UnsupportedEncodingException {
+        return URLEncoder.encode(query, "UTF-8");
     }
 
     @Override
-    protected ArrayList<ProductView> doInBackground(Void... params) {
+    protected Void doInBackground(Void... params) {
 
         Document doc = null;
         ArrayList<ProductView> products = new ArrayList<>();
@@ -50,7 +49,7 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<Produc
         boolean isNextPage = true;
 
         try {
-            String url = template.url.getUrl();
+            String url = template.url.getUrl(encode(query));
 
             while(true) {
 
@@ -71,18 +70,29 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, ArrayList<Produc
         } catch (Exception e) {
             Log.e("getDocuments:Jsoup.get", e.getMessage());
         }
-        return products;
+
+        Comparator<ProductView> comparator = new Comparator<ProductView>() {
+            @Override
+            public int compare(ProductView o1, ProductView o2) {
+                return ((Integer) (int) Math.round(Double.parseDouble(o1.price)) - (int) Math.round(Double.parseDouble(o2.price)));
+            }
+        };
+
+        Collections.sort(products, comparator);
+
+        SearchResult.results.put(template.name, products);
+
+        return null;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<ProductView> products) {
-        Log.d("web.scraper", "GetProductsAsyncTask - onPostExecute - products.size() = " + products.size());
+    protected void onPostExecute(Void params) {
+        Log.d("web.scraper", "GetProductsAsyncTask - onPostExecute");
         // broadcast receiver send!
 
-      /*  Intent broadcastState = new Intent()
-                .setAction("pt.webscraping.RESULTS_UPDATE")
-                .putExtra("products", products);
-        this.context.sendBroadcast(broadcastState);*/
+        Intent broadcastState = new Intent()
+                .setAction("pt.webscraping.RESULTS_UPDATE");
+        this.context.sendBroadcast(broadcastState);
     }
 }
 

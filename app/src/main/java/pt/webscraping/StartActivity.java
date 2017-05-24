@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import pt.webscraping.entities.SearchResult;
 import pt.webscraping.entities.Template;
 
 /**
@@ -66,11 +67,9 @@ public class StartActivity extends Activity {
         initializeTemplates();
     }
 
-    public void switchActivity(ArrayList<Template> templateList){
+    public void goToMainActivity(){
 
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("templates", templateList);
-
         startActivity(intent);
         this.finish();
     }
@@ -89,7 +88,8 @@ public class StartActivity extends Activity {
                 for (DataSnapshot t : dataSnapshot.getChildren()) {
                     templateList.add(new Template(t));
                 }
-                switchActivity(templateList);
+                SearchResult.templates = templateList;
+                goToMainActivity();
             }
 
             @Override
