@@ -16,13 +16,13 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pt.webscraping.entities.ProductView;
+import pt.webscraping.entities.ListItem;
 import pt.webscraping.entities.SearchResult;
 
 public class LoadingActivity extends Activity
 {
 
-    private ArrayList<ProductView> _results = new ArrayList<>();
+    private ArrayList<ListItem> _results = new ArrayList<>();
 
     private IntentFilter filterComplete = new IntentFilter("pt.webscraping.RESULTS_READY");
     private IntentFilter filterUpdate = new IntentFilter("pt.webscraping.RESULTS_UPDATE");

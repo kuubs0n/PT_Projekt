@@ -8,17 +8,24 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pt.webscraping.entities.ProductView;
+import pt.webscraping.entities.ListItem;
 import pt.webscraping.entities.SearchResult;
+import pt.webscraping.entities.Template;
 
 /**
  * Created by Kuba on 11-Apr-2017.
@@ -26,23 +33,25 @@ import pt.webscraping.entities.SearchResult;
 
 public class ResultsActivity extends Activity {
 
-    private ArrayList<ProductView> _listOfProducts = new ArrayList<>();
-
+    private ArrayList<ListItem> _listOfProducts = new ArrayList<>();
     private String _searchQuery;
 
     @BindView(R.id.textViewQuery)
     TextView textViewQuery;
 
-    @BindView(R.id.linearLayoutResults)
+    @BindView(R.id.layoucik)
     LinearLayout linearLayout;
 
     // random id used to determine our notification
     private static int NOTIFICATION_ID = 3453;
 
+    RecyclerView recyclerView;
+    LinearLayoutManager linearLayoutManager;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_results);
+        setContentView(R.layout.activity_results_bak);
         ButterKnife.bind(this);
 
         _searchQuery = SearchResult.searchQuery;
@@ -50,48 +59,31 @@ public class ResultsActivity extends Activity {
         // dismiss notification when user enter results
         NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         nManager.cancel(NOTIFICATION_ID);
-
+        int counter = 0;
         if(SearchResult.results.keySet().isEmpty()){
             textViewQuery.setVisibility(View.VISIBLE);
             textViewQuery.setText("NO RESULTS");
-        }else{
-            int counter = 0;
-            for(String templateName : SearchResult.results.keySet()){
-                counter += SearchResult.results.get(templateName).size();
-                TextView textViewShopName = new TextView(this);
-                textViewShopName.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
-                textViewShopName.setGravity(Gravity.CENTER_HORIZONTAL);
-                textViewShopName.setText(templateName + "(" + SearchResult.results.get(templateName).size() + ")");
-                linearLayout.addView(textViewShopName);
-
-                RecyclerView recyclerView = new RecyclerView(this);
-                recyclerView.setLayoutParams(new RecyclerView.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT));
-                initializeRecyclerView(recyclerView);
-                initializeAdapter(recyclerView, SearchResult.results.get(templateName));
-                linearLayout.addView(recyclerView);
-            }
-            textViewQuery.setText(_searchQuery + "(" + counter + ")");
         }
-    }
+        else{
+            textViewQuery.setText(_searchQuery);
 
-    private void initializeRecyclerView(RecyclerView recycler){
-        recycler.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recycler.setLayoutManager(linearLayoutManager);
-    }
+            for(Template template : SearchResult.selectedTemplates){
+                List<ListItem> results = SearchResult.results.get(template.name);
+                Header header = getHeader(template.name + "(" + String.valueOf(results.size()) + ")");
 
-    private void initializeAdapter(RecyclerView recycler, ArrayList<ProductView> products) {
-        RVAdapter adapter = new RVAdapter(products, new CustomItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                openProductInBrowser(position);
+                RecyclerView recyclerViewTemp = new RecyclerView(this);
+                recyclerViewTemp.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.WRAP_CONTENT));
+
+                MyRecyclerAdapter adapterTemp = new MyRecyclerAdapter(this, header, results);
+                LinearLayoutManager linearLayoutManagerTemp = new LinearLayoutManager(this);
+                recyclerViewTemp.setLayoutManager(linearLayoutManagerTemp);
+                recyclerViewTemp.setAdapter(adapterTemp);
+                linearLayout.addView(recyclerViewTemp);
+
+                counter += results.size();
             }
-        });
-        recycler.setAdapter(adapter);
+            textViewQuery.setText(textViewQuery.getText() + " ( " + counter + " )");
+        }
     }
 
     private void openProductInBrowser(int position){
@@ -102,6 +94,14 @@ public class ResultsActivity extends Activity {
         startActivity(openBrowser);
     }
 
+    public void openProductInBrowser(String url){
+        Intent openBrowser = new Intent();
+        openBrowser.setAction(Intent.ACTION_VIEW);
+        openBrowser.addCategory(Intent.CATEGORY_BROWSABLE);
+        openBrowser.setData(Uri.parse(url));
+        startActivity(openBrowser);
+    }
+
     @Override
     public void onBackPressed() {
         Intent setIntent = new Intent(this, MainActivity.class);
@@ -109,5 +109,9 @@ public class ResultsActivity extends Activity {
         finish();
     }
 
-
+    public Header getHeader(String headerName){
+        Header header = new Header();
+        header.setHeader(headerName);
+        return header;
+    }
 }

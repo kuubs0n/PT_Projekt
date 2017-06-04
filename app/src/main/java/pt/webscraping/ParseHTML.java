@@ -6,10 +6,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import pt.webscraping.entities.ProductView;
+import pt.webscraping.entities.ListItem;
 import pt.webscraping.entities.Template;
 
 /**
@@ -18,8 +16,8 @@ import pt.webscraping.entities.Template;
 
 public class ParseHTML {
 
-    public static ArrayList<ProductView> parseProducts(Document doc, Template template){
-        ArrayList<ProductView> products = new ArrayList<>();
+    public static ArrayList<ListItem> parseProducts(Document doc, Template template){
+        ArrayList<ListItem> products = new ArrayList<>();
 
         ArrayList<Element> productsEl  = doc.select(template.product.element);
 
@@ -29,7 +27,7 @@ public class ParseHTML {
 
                 String price = p.select(template.product.price).first().ownText().trim();
 
-                products.add(new ProductView(
+                products.add(new ListItem(
                         p.select(template.product.title).text(),
                         p.select(template.product.author).text(),
                         p.select(template.product.link).attr("abs:href"),

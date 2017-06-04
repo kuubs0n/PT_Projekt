@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import pt.webscraping.entities.ProductView;
+import pt.webscraping.entities.ListItem;
 import pt.webscraping.entities.SearchResult;
 import pt.webscraping.entities.Template;
 
@@ -44,7 +44,7 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
 
         Document doc = null;
-        ArrayList<ProductView> products = new ArrayList<>();
+        ArrayList<ListItem> products = new ArrayList<>();
 
         boolean isNextPage = true;
 
@@ -71,9 +71,9 @@ public class GetProductsAsyncTask extends AsyncTask<Void, Void, Void> {
             Log.e("getDocuments:Jsoup.get", e.getMessage());
         }
 
-        Comparator<ProductView> comparator = new Comparator<ProductView>() {
+        Comparator<ListItem> comparator = new Comparator<ListItem>() {
             @Override
-            public int compare(ProductView o1, ProductView o2) {
+            public int compare(ListItem o1, ListItem o2) {
                 return ((Integer) (int) Math.round(Double.parseDouble(o1.price)) - (int) Math.round(Double.parseDouble(o2.price)));
             }
         };

@@ -12,7 +12,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import pt.webscraping.entities.ProductView;
 import pt.webscraping.entities.SearchResult;
 import pt.webscraping.entities.Template;
 
