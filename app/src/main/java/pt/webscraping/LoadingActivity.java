@@ -50,13 +50,13 @@ public class LoadingActivity extends Activity
     private BroadcastReceiver broadcastUpdate = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (SearchResult.templates.size() > _downloadStatus)
+            if (SearchResult.selectedTemplates.size() > _downloadStatus)
             {
                 _downloadStatus += 1;
 
                 Log.d("web.scraper", "LoadingActivity - downloadStatus = " + _downloadStatus);
 
-                String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, SearchResult.templates.size());
+                String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, SearchResult.selectedTemplates.size());
                 textViewLoading.setText(loadingText);
             }
         }
@@ -69,9 +69,9 @@ public class LoadingActivity extends Activity
         ButterKnife.bind(this);
 
 
-        Log.d("web.scraper", "LoadingActivity - templatesCount = " + SearchResult.templates.size());
+        Log.d("web.scraper", "LoadingActivity - templatesCount = " + SearchResult.selectedTemplates.size());
 
-        String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, SearchResult.templates.size());
+        String loadingText = getResources().getString(R.string.notification_download_results_text, _downloadStatus, SearchResult.selectedTemplates.size());
         textViewLoading.setText(loadingText);
 
         // fullscreen ad

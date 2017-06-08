@@ -129,7 +129,6 @@ public class MainActivity extends Activity {
             }
 
             SearchResult.searchQuery = query;
-            SearchResult.templates = getSelectedTemplates();
 
             Intent mServiceIntent = new Intent(this, GetContentIntentService.class);
             this.startService(mServiceIntent);
